@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Lot</string>
+    <string name="title_activity_main">Lot</string>
+    <string name="package_name">de.lot.app</string>
+    <string name="custom_url_scheme">de.lot.app</string>
+</resources>

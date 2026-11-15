@@ -1,0 +1,15 @@
+{
+  "appId": "de.lot.app",
+  "appName": "Lot",
+  "webDir": "www",
+  "backgroundColor": "#F4EEDF",
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "SystemBars": {
+      "insetsHandling": "native",
+      "style": "LIGHT"
+    }
+  }
+}
