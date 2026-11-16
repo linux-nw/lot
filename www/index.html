@@ -1358,9 +1358,21 @@ class Component extends DCLogic {
 
     // ---- Summe ----
     const k = this.kontoThrough(S.date, S, todayIso);
+    // Restzeit bis Soll inkl. automatischer Pause: Die 30/45 Min. kommen erst beim Überschreiten von 6:30/9:45 Brutto dazu.
+    let toGo = sel.saldo < 0 ? -sel.saldo : 0;
+    if (sel.open && sel.saldo < 0 && st.autoBreak) {
+      const gross = sel.worked + sel.autoCut;
+      toGo = 0;
+      for (let m = 0; m <= 720; m++) {
+        const g = gross + m;
+        const req = g > 540 ? 45 : (g > 360 ? 30 : 0);
+        if (g - Math.max(0, req - sel.pause) >= sel.soll) { toGo = m; break; }
+        toGo = m;
+      }
+    }
     let remain = 'KEIN SOLL';
     if (sel.type === 'schule') remain = 'SCHULTAG · SOLL ANGERECHNET';
-    else if (sel.soll > 0 && sel.saldo < 0) remain = 'NOCH ' + this.fmt(-sel.saldo) + ' BIS SOLL';
+    else if (sel.soll > 0 && sel.saldo < 0) remain = 'NOCH ' + this.fmt(sel.open ? toGo : -sel.saldo) + ' BIS SOLL';
     else if (sel.soll > 0) remain = 'SOLL ERREICHT';
     else if (sel.worked > 0) remain = 'MEHRARBEIT';
     const hasEta = sel.open && sel.saldo < 0;
@@ -1379,7 +1391,7 @@ class Component extends DCLogic {
       kontoSub: S.date > todayIso ? 'STAND HEUTE' : (S.date === todayIso ? 'INKL. HEUTE' : 'AM TAGESENDE'),
       remain: remain,
       hasEta: hasEta,
-      eta: hasEta ? 'FEIERABEND ~' + this.hhmm(nowMin - sel.saldo) : '',
+      eta: hasEta ? 'FEIERABEND ~' + this.hhmm(nowMin + toGo) : '',
       pct: pct,
       rulerBg: rulerBg,
       fillBg: 'repeating-linear-gradient(135deg, ' + fillColor + ' 0, ' + fillColor + ' 3px, transparent 3px, transparent 6px)'
