@@ -159,18 +159,24 @@ NACHTRAGEN
 </div>
 
 <div style="display: flex; align-items: center; gap: 8px">
-<button aria-label="Vorheriger Monat" onClick="{{prevMonth}}" style="flex: none; width: 44px; height: 44px; border: 1.5px solid #1F1C17; border-radius: 0; background: #FBF8F0; color: #1F1C17; display: flex; align-items: center; justify-content: center; padding: 0">
+<button aria-label="Zurück" onClick="{{prevMonth}}" style="flex: none; width: 44px; height: 44px; border: 1.5px solid #1F1C17; border-radius: 0; background: #FBF8F0; color: #1F1C17; display: flex; align-items: center; justify-content: center; padding: 0">
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
 </button>
 <h1 style="flex: 1 1 0; margin: 0; display: flex; align-items: baseline; justify-content: center; gap: 8px">
 <span style="font-size: 34px; font-weight: 700; letter-spacing: 0.01em; line-height: 1">{{cal.month}}</span>
 <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; color: #4D473B">{{cal.year}}</span>
 </h1>
-<button aria-label="Nächster Monat" onClick="{{nextMonth}}" style="flex: none; width: 44px; height: 44px; border: 1.5px solid #1F1C17; border-radius: 0; background: #FBF8F0; color: #1F1C17; display: flex; align-items: center; justify-content: center; padding: 0">
+<button aria-label="Weiter" onClick="{{nextMonth}}" style="flex: none; width: 44px; height: 44px; border: 1.5px solid #1F1C17; border-radius: 0; background: #FBF8F0; color: #1F1C17; display: flex; align-items: center; justify-content: center; padding: 0">
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
 </button>
 </div>
 
+<div style="display: flex">
+<button aria-pressed="{{cal.isMonth}}" onClick="{{setMonthView}}" style="flex: 1 1 0; min-height: 38px; border-radius: 0; border: 1.5px solid #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; background: {{cal.mBg}}; color: {{cal.mFg}}">MONAT</button>
+<button aria-pressed="{{cal.isWeek}}" onClick="{{setWeekView}}" style="flex: 1 1 0; min-height: 38px; border-radius: 0; border: 1.5px solid #1F1C17; border-left: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; background: {{cal.wBg}}; color: {{cal.wFg}}">WOCHE · ALLE ZEITEN</button>
+</div>
+
+<sc-if value="{{cal.isMonth}}" hint-placeholder-val="{{ true }}">
 <div style="display: flex; flex-direction: column; gap: 4px">
 <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; color: #4D473B">
 <span style="padding-left: 5px">MO</span><span style="padding-left: 5px">DI</span><span style="padding-left: 5px">MI</span><span style="padding-left: 5px">DO</span><span style="padding-left: 5px">FR</span><span style="padding-left: 5px">SA</span><span style="padding-left: 5px">SO</span>
@@ -178,24 +184,69 @@ NACHTRAGEN
 <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; background: #CBBF9F; border: 1.5px solid #1F1C17">
 <sc-for list="{{cal.cells}}" as="c" hint-placeholder-count="35">
 <sc-if value="{{c.inMonth}}" hint-placeholder-val="{{ true }}">
-<button aria-label="{{c.aria}}" onClick="{{c.tap}}" style="height: 56px; box-sizing: border-box; padding: 4px 5px; border: 0; border-radius: 0; display: flex; flex-direction: column; justify-content: space-between; align-items: stretch; text-align: left; background: {{c.bg}}; color: {{c.fg}}; box-shadow: {{c.ring}}">
+<button aria-label="{{c.aria}}" onClick="{{c.tap}}" style="height: 98px; box-sizing: border-box; padding: 4px 4px 5px; border: 0; border-radius: 0; display: flex; flex-direction: column; justify-content: space-between; align-items: stretch; text-align: left; overflow: hidden; background: {{c.bg}}; color: {{c.fg}}; box-shadow: {{c.ring}}">
+<span style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2px">
 <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600">{{c.num}}</span>
-<span style="display: flex; justify-content: flex-end; align-items: flex-end; min-height: 16px">
 <sc-if value="{{c.hasCode}}" hint-placeholder-val="{{ false }}">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700; line-height: 1.2; padding: 0 3px; border: 1.5px solid {{c.codeColor}}; color: {{c.codeColor}}; opacity: {{c.ink}}; transform: {{c.tf}}">{{c.code}}</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; font-weight: 700; line-height: 1.2; padding: 0 2px; border: 1.5px solid {{c.codeColor}}; color: {{c.codeColor}}; opacity: {{c.ink}}; transform: {{c.tf}}">{{c.code}}</span>
 </sc-if>
+</span>
+<span style="display: flex; flex-direction: column; font-family: 'IBM Plex Mono', monospace; line-height: 1.25">
 <sc-if value="{{c.hasHours}}" hint-placeholder-val="{{ false }}">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500; color: {{c.hoursColor}}">{{c.hours}}</span>
+<span style="font-size: 11px; font-weight: 700; color: {{c.hoursColor}}">{{c.hours}}</span>
 </sc-if>
+<sc-if value="{{c.hasTimes}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 9px; font-weight: 500; opacity: 0.85">{{c.tIn}}</span>
+<span style="font-size: 9px; font-weight: 500; opacity: 0.85">{{c.tOut}}</span>
+</sc-if>
+</span>
+<span style="position: relative; display: block; height: 6px; background: {{c.track}}">
+<sc-for list="{{c.tl}}" as="g" hint-placeholder-count="2">
+<span style="position: absolute; top: 0; bottom: 0; left: {{g.l}}%; width: {{g.w}}%; background: {{c.bar}}"></span>
+</sc-for>
 </span>
 </button>
 </sc-if>
 <sc-if value="{{c.outMonth}}" hint-placeholder-val="{{ false }}">
-<div style="height: 56px; background: #EDE6D3"></div>
+<div style="height: 98px; background: #EDE6D3"></div>
 </sc-if>
 </sc-for>
 </div>
 </div>
+</sc-if>
+
+<sc-if value="{{cal.isWeek}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 1px; background: #CBBF9F; border: 1.5px solid #1F1C17">
+<sc-for list="{{cal.weekRows}}" as="r" hint-placeholder-count="7">
+<button aria-label="{{r.aria}}" onClick="{{r.tap}}" style="display: grid; grid-template-columns: 50px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 10px 11px; border: 0; border-radius: 0; text-align: left; background: {{r.bg}}; color: {{r.fg}}; box-shadow: {{r.ring}}">
+<span style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; opacity: 0.8">{{r.dow}}</span>
+<span style="font-size: 24px; font-weight: 700; line-height: 1">{{r.num}}</span>
+<sc-if value="{{r.hasCode}}" hint-placeholder-val="{{ false }}">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700; line-height: 1.2; padding: 0 3px; border: 1.5px solid {{r.codeColor}}; color: {{r.codeColor}}; opacity: {{r.ink}}; transform: {{r.tf}}">{{r.code}}</span>
+</sc-if>
+</span>
+<span style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+<sc-for list="{{r.lines}}" as="ln" hint-placeholder-count="2">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; line-height: 1.3">{{ln.text}}</span>
+</sc-for>
+<sc-if value="{{r.hasNote}}" hint-placeholder-val="{{ false }}">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; opacity: 0.85">{{r.note}}</span>
+</sc-if>
+<span style="position: relative; display: block; height: 7px; margin-top: 2px; background: {{r.track}}">
+<sc-for list="{{r.tl}}" as="g" hint-placeholder-count="2">
+<span style="position: absolute; top: 0; bottom: 0; left: {{g.l}}%; width: {{g.w}}%; background: {{r.bar}}"></span>
+</sc-for>
+</span>
+</span>
+<span style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-family: 'IBM Plex Mono', monospace;">
+<span style="font-size: 15px; font-weight: 700">{{r.hours}}</span>
+<span style="font-size: 11px; font-weight: 700; color: {{r.saldoColor}}">{{r.saldo}}</span>
+</span>
+</button>
+</sc-for>
+</div>
+</sc-if>
 
 <div style="border: 1.5px solid #1F1C17; background: #FBF8F0; padding: 12px 12px 14px; display: flex; flex-direction: column; gap: 12px">
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
@@ -217,18 +268,47 @@ NACHTRAGEN
 </div>
 
 <sc-if value="{{showDayLine}}" hint-placeholder-val="{{ true }}">
-<button onClick="{{goDay}}" style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 12px 10px 14px; border-radius: 0; border: 1.5px solid #1F1C17; background: #FBF8F0; color: #1F1C17; text-align: left">
+<div style="border: 1.5px solid #1F1C17; background: #FBF8F0; display: flex; flex-direction: column">
+<button onClick="{{goDay}}" style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 12px 10px 14px; border-radius: 0; border: 0; background: transparent; color: #1F1C17; text-align: left">
 <span style="flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; padding: 0 4px; border: 1.5px solid #1F1C17">{{head.dow}}</span>
 <span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 1px">
 <span style="font-size: 20px; font-weight: 700; line-height: 1.1">{{head.dm}}</span>
 <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4D473B">{{dayLine.kind}}</span>
 </span>
-<span style="display: flex; flex-direction: column; align-items: flex-end; gap: 1px; font-family: 'IBM Plex Mono', monospace">
+<span style="display: flex; flex-direction: column; align-items: flex-end; gap: 1px; font-family: 'IBM Plex Mono', monospace;">
 <span style="font-size: 13px; font-weight: 600">{{sum.worked}} / {{sum.soll}}</span>
 <span style="font-size: 12px; font-weight: 700; color: {{sum.saldoColor}}">{{sum.saldo}}</span>
 </span>
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
 </button>
+<sc-if value="{{dayLine.showBlocks}}" hint-placeholder-val="{{ true }}">
+<div style="border-top: 1px solid #CBBF9F; padding: 10px 14px 14px; display: flex; flex-direction: column; gap: 8px">
+<sc-if value="{{dayLine.hasRows}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column">
+<sc-for list="{{dayLine.rows}}" as="rw" hint-placeholder-count="3">
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 5px 0; border-bottom: 1px dotted #CBBF9F; font-family: 'IBM Plex Mono', monospace;">
+<span style="font-size: 14px; font-weight: {{rw.weight}}; color: {{rw.color}}">{{rw.text}}</span>
+<span style="font-size: 12px; font-weight: 600; color: {{rw.color}}">{{rw.dur}}</span>
+</div>
+</sc-for>
+</div>
+<div style="position: relative; height: 16px; background: #E3DAC2; margin-top: 4px">
+<sc-for list="{{dayLine.tl}}" as="g" hint-placeholder-count="2">
+<span style="position: absolute; top: 0; bottom: 0; left: {{g.l}}%; width: {{g.w}}%; background: #1F1C17"></span>
+</sc-for>
+</div>
+<div style="position: relative; height: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #4D473B">
+<sc-for list="{{dayLine.ticks}}" as="tk" hint-placeholder-count="5">
+<span style="position: absolute; top: 0; left: {{tk.l}}%; transform: translateX(-50%)">{{tk.label}}</span>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{dayLine.noRows}}" hint-placeholder-val="{{ false }}">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #4D473B">{{dayLine.emptyText}}</span>
+</sc-if>
+</div>
+</sc-if>
+</div>
 </sc-if>
 
 <div style="border: 1.5px solid #1F1C17; background: #FBF8F0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr))">
@@ -241,12 +321,12 @@ NACHTRAGEN
 <span style="font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 600">{{cal.soll}}</span>
 </div>
 <div style="padding: 10px 12px; display: flex; flex-direction: column; gap: 2px">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.12em; color: #4D473B">MONAT</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.12em; color: #4D473B">{{cal.sumLabel}}</span>
 <span style="font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 700; color: {{cal.saldoColor}}">{{cal.saldo}}</span>
 </div>
 </div>
 
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4D473B">FT = FEIERTAG, AUTOMATISCH FÜR {{regionShort}}</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4D473B; line-height: 1.5">{{cal.legend}}</span>
 </div>
 </sc-if>
 
@@ -401,6 +481,30 @@ NACHTRAGEN
 </div>
 <button onClick="{{openSetup}}" style="flex: none; min-height: 44px; padding: 0 14px; border-radius: 0; border: 1.5px solid #1F1C17; background: #FBF8F0; color: #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.06em">ÄNDERN</button>
 </div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid #CBBF9F">
+<div style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 0; min-width: 0">
+<span style="font-size: 17px; font-weight: 600">Feiertage anzeigen</span>
+<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Gesetzliche Feiertage zählen als frei und ohne Soll.</span>
+</div>
+<button role="switch" aria-label="Feiertage ein oder aus" aria-checked="{{set.useHol}}" onClick="{{toggleHol}}" style="flex: none; width: 60px; height: 44px; padding: 0; background: none; border: 0; display: flex; align-items: center">
+<span style="display: flex; align-items: center; width: 56px; height: 30px; box-sizing: border-box; border: 1.5px solid #1F1C17; background: {{set.holBg}}">
+<span style="width: 22px; height: 22px; background: {{set.holKnob}}; margin-left: {{set.holLeft}}px; transition: margin-left 0.12s"></span>
+</span>
+</button>
+</div>
+<sc-if value="{{set.hasFerien}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid #CBBF9F">
+<div style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 0; min-width: 0">
+<span style="font-size: 17px; font-weight: 600">Schulferien anzeigen</span>
+<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Amtliche Ferien als Schraffur im Kalender. Berufsschule fällt in den Ferien aus. Das Soll ändert sich nicht.</span>
+</div>
+<button role="switch" aria-label="Schulferien ein oder aus" aria-checked="{{set.useFerien}}" onClick="{{toggleFerien}}" style="flex: none; width: 60px; height: 44px; padding: 0; background: none; border: 0; display: flex; align-items: center">
+<span style="display: flex; align-items: center; width: 56px; height: 30px; box-sizing: border-box; border: 1.5px solid #1F1C17; background: {{set.ferBg}}">
+<span style="width: 22px; height: 22px; background: {{set.ferKnob}}; margin-left: {{set.ferLeft}}px; transition: margin-left 0.12s"></span>
+</span>
+</button>
+</div>
+</sc-if>
 </div>
 
 
@@ -428,13 +532,32 @@ NACHTRAGEN
 <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 0; border-bottom: 1px solid #CBBF9F">
 <div style="display: flex; flex-direction: column; gap: 1px">
 <span style="font-size: 17px; font-weight: 600">Feste Berufsschultage</span>
-<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Diese Wochentage zählen automatisch als Schule. Blockunterricht trägst du im Kalender ein.</span>
+<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Diese Wochentage zählen in Schulwochen automatisch als Schule. Blockunterricht trägst du im Kalender ein.</span>
 </div>
 <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr))">
 <sc-for list="{{schoolChips}}" as="w" hint-placeholder-count="7">
 <button aria-label="{{w.aria}}" aria-pressed="{{w.on}}" onClick="{{w.tap}}" style="min-height: 44px; border-radius: 0; margin-left: -1.5px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; padding: 0; background: {{w.bg}}; color: {{w.fg}}; border: 1.5px solid #1F1C17">{{w.label}}</button>
 </sc-for>
 </div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding-top: 6px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.12em; color: #4D473B">RHYTHMUS</span>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
+<sc-for list="{{everyChips}}" as="w" hint-placeholder-count="4">
+<button aria-label="{{w.aria}}" aria-pressed="{{w.on}}" onClick="{{w.tap}}" style="min-height: 44px; border-radius: 0; margin-left: -1.5px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; padding: 0 2px; background: {{w.bg}}; color: {{w.fg}}; border: 1.5px solid #1F1C17">{{w.label}}</button>
+</sc-for>
+</div>
+</div>
+<sc-if value="{{sch.multi}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.12em; color: #4D473B">DIESE WOCHE (KW {{sch.kw}}) IST</span>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr))">
+<sc-for list="{{thisWeekChips}}" as="w" hint-placeholder-count="2">
+<button aria-pressed="{{w.on}}" onClick="{{w.tap}}" style="min-height: 44px; border-radius: 0; margin-left: -1.5px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; padding: 0 2px; background: {{w.bg}}; color: {{w.fg}}; border: 1.5px solid #1F1C17">{{w.label}}</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #1F1C17; line-height: 1.5">{{sch.next}}</span>
 </div>
 </div>
 
@@ -582,7 +705,7 @@ WIRD ALS GEHEN EINGETRAGEN
 </div>
 <div style="display: flex; flex-direction: column; gap: 6px">
 <h1 style="margin: 0; font-size: 38px; font-weight: 700; line-height: 1">NEUE KARTE</h1>
-<span style="font-size: 15px; color: #4D473B; line-height: 1.4">Damit Feiertage automatisch stimmen, brauche ich dein Land und dein Bundesland.</span>
+<span style="font-size: 15px; color: #4D473B; line-height: 1.4">Ich brauche dein Land und Bundesland. Feiertage und Schulferien kannst du danach ein- oder ausschalten.</span>
 </div>
 
 <div style="display: flex; flex-direction: column; gap: 8px">
@@ -604,6 +727,34 @@ WIRD ALS GEHEN EINGETRAGEN
 </div>
 </div>
 </sc-if>
+
+<div style="display: flex; flex-direction: column">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: #4D473B; padding-bottom: 6px; border-bottom: 1.5px solid #1F1C17">{{setup.stepHol}} · OPTIONAL</span>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid #CBBF9F">
+<div style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 0; min-width: 0">
+<span style="font-size: 17px; font-weight: 600">Feiertage</span>
+<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Gesetzliche Feiertage automatisch eintragen.</span>
+</div>
+<button role="switch" aria-label="Feiertage ein oder aus" aria-checked="{{setup.hol}}" onClick="{{setup.toggleHol}}" style="flex: none; width: 60px; height: 44px; padding: 0; background: none; border: 0; display: flex; align-items: center">
+<span style="display: flex; align-items: center; width: 56px; height: 30px; box-sizing: border-box; border: 1.5px solid #1F1C17; background: {{setup.holBg}}">
+<span style="width: 22px; height: 22px; background: {{setup.holKnob}}; margin-left: {{setup.holLeft}}px; transition: margin-left 0.12s"></span>
+</span>
+</button>
+</div>
+<sc-if value="{{setup.hasFerien}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid #CBBF9F">
+<div style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 0; min-width: 0">
+<span style="font-size: 17px; font-weight: 600">Schulferien</span>
+<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Amtliche Ferien deines Bundeslands im Kalender zeigen.</span>
+</div>
+<button role="switch" aria-label="Schulferien ein oder aus" aria-checked="{{setup.ferien}}" onClick="{{setup.toggleFerien}}" style="flex: none; width: 60px; height: 44px; padding: 0; background: none; border: 0; display: flex; align-items: center">
+<span style="display: flex; align-items: center; width: 56px; height: 30px; box-sizing: border-box; border: 1.5px solid #1F1C17; background: {{setup.ferBg}}">
+<span style="width: 22px; height: 22px; background: {{setup.ferKnob}}; margin-left: {{setup.ferLeft}}px; transition: margin-left 0.12s"></span>
+</span>
+</button>
+</div>
+</sc-if>
+</div>
 
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
 <div style="display: flex; flex-direction: column; gap: 1px">
@@ -634,7 +785,7 @@ WIRD ALS GEHEN EINGETRAGEN
 
 <div style="border: 1.5px dashed #A99C7C; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px">
 <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em">{{setup.preview}}</span>
-<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Gesetzliche Feiertage nach Landesrecht. Die App gleicht sie online mit der OpenHolidays API ab, offline rechnet sie selbst.</span>
+<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Feiertage rechnet die App offline nach Landesrecht. Schulferien sind amtliche Daten (OpenHolidays API) und fest in der App.</span>
 </div>
 </div>
 <div style="flex: none; padding: 14px 20px 24px; border-top: 1.5px solid #1F1C17">
@@ -738,6 +889,8 @@ function mountDC(Cls,tplText,host){
 }
 
 
+/* Amtliche Schulferien, Quelle: OpenHolidays API (openholidaysapi.org), Stand 2026-11-16. Neu holen: tools/fetch-ferien.py */
+const FERIEN = {"BB":[["2025-02-03","2025-02-08","Winterferien"],["2025-04-14","2025-04-25","Osterferien"],["2025-05-02","2025-05-02","Variabler Ferientag"],["2025-05-30","2025-05-30","Variabler Ferientag"],["2025-06-10","2025-06-10","Pfingstferien"],["2025-07-24","2025-09-06","Sommerferien"],["2025-10-20","2025-11-01","Herbstferien"],["2025-12-22","2026-01-02","Weihnachtsferien"],["2026-02-02","2026-02-07","Winterferien"],["2026-03-30","2026-04-10","Osterferien"],["2026-05-15","2026-05-15","Variabler Ferientag"],["2026-05-26","2026-05-26","Pfingstferien"],["2026-07-09","2026-08-22","Sommerferien"],["2026-10-19","2026-10-30","Herbstferien"],["2026-12-23","2027-01-02","Weihnachtsferien"],["2027-02-01","2027-02-06","Winterferien"],["2027-03-22","2027-04-03","Osterferien"],["2027-05-07","2027-05-07","Variabler Ferientag"],["2027-05-18","2027-05-18","Pfingstferien"],["2027-07-01","2027-08-14","Sommerferien"],["2027-10-11","2027-10-23","Herbstferien"],["2027-12-23","2027-12-31","Weihnachtsferien"],["2028-01-31","2028-02-05","Winterferien"],["2028-04-10","2028-04-22","Osterferien"],["2028-05-26","2028-05-26","Variabler Ferientag"],["2028-06-29","2028-08-12","Sommerferien"],["2028-10-02","2028-10-14","Herbstferien"],["2028-10-30","2028-10-30","Variabler Ferientag"],["2028-12-22","2029-01-02","Weihnachtsferien"],["2029-01-29","2029-02-03","Winterferien"],["2029-03-26","2029-04-06","Osterferien"],["2029-04-30","2029-04-30","Variabler Ferientag"],["2029-05-11","2029-05-11","Variabler Ferientag"],["2029-05-22","2029-05-22","Pfingstferien"],["2029-06-28","2029-08-11","Sommerferien"],["2029-10-01","2029-10-12","Herbstferien"],["2029-12-21","2030-01-04","Weihnachtsferien"]],"BE":[["2025-02-03","2025-02-08","Winterferien"],["2025-04-14","2025-04-25","Osterferien"],["2025-05-02","2025-05-02","Unterrichtsfreier Tag"],["2025-05-30","2025-05-30","Unterrichtsfreier Tag"],["2025-06-10","2025-06-10","Pfingstferien"],["2025-07-24","2025-09-06","Sommerferien"],["2025-10-20","2025-11-01","Herbstferien"],["2025-12-22","2026-01-02","Weihnachtsferien"],["2026-02-02","2026-02-07","Winterferien"],["2026-03-30","2026-04-10","Osterferien"],["2026-05-15","2026-05-15","Unterrichtsfreier Tag"],["2026-05-26","2026-05-26","Pfingstferien"],["2026-07-09","2026-08-22","Sommerferien"],["2026-10-19","2026-10-31","Herbstferien"],["2026-12-23","2027-01-02","Weihnachtsferien"],["2027-02-01","2027-02-06","Winterferien"],["2027-03-22","2027-04-02","Osterferien"],["2027-05-07","2027-05-07","Unterrichtsfreier Tag"],["2027-05-18","2027-05-19","Pfingstferien"],["2027-07-01","2027-08-14","Sommerferien"],["2027-10-11","2027-10-23","Herbstferien"],["2027-12-22","2027-12-31","Weihnachtsferien"],["2028-01-31","2028-02-05","Winterferien"],["2028-04-10","2028-04-22","Osterferien"],["2028-05-26","2028-05-26","Unterrichtsfreier Tag"],["2028-06-01","2028-06-02","Pfingstferien"],["2028-07-01","2028-08-12","Sommerferien"],["2028-10-02","2028-10-14","Herbstferien"],["2028-12-22","2029-01-02","Weihnachtsferien"],["2029-01-29","2029-02-03","Winterferien"],["2029-03-09","2029-03-09","Unterrichtsfreier Tag"],["2029-03-26","2029-04-06","Osterferien"],["2029-04-30","2029-04-30","Unterrichtsfreier Tag"],["2029-05-11","2029-05-11","Unterrichtsfreier Tag"],["2029-05-22","2029-05-25","Pfingstferien"],["2029-07-01","2029-08-11","Sommerferien"],["2029-10-01","2029-10-12","Herbstferien"],["2029-12-21","2030-01-04","Weihnachtsferien"]],"BW":[["2024-12-23","2025-01-04","Weihnachtsferien"],["2025-04-14","2025-04-26","Osterferien"],["2025-06-10","2025-06-20","Pfingstferien"],["2025-07-31","2025-09-13","Sommerferien"],["2025-10-27","2025-10-30","Herbstferien"],["2025-10-31","2025-10-31","Reformationsfest"],["2025-12-22","2026-01-05","Weihnachtsferien"],["2026-03-30","2026-04-11","Osterferien"],["2026-05-26","2026-06-05","Pfingstferien"],["2026-07-30","2026-09-12","Sommerferien"],["2026-10-26","2026-10-30","Herbstferien"],["2026-10-31","2026-10-31","Reformationsfest"],["2026-12-23","2027-01-09","Weihnachtsferien"],["2027-03-25","2027-03-25","Gründonnerstag"],["2027-03-30","2027-04-03","Osterferien"],["2027-05-18","2027-05-29","Pfingstferien"],["2027-07-29","2027-09-11","Sommerferien"],["2027-11-02","2027-11-06","Herbstferien"],["2027-12-23","2028-01-08","Weihnachtsferien"],["2028-04-13","2028-04-13","Gründonnerstag"],["2028-04-18","2028-04-22","Osterferien"],["2028-06-06","2028-06-17","Pfingstferien"],["2028-07-27","2028-09-09","Sommerferien"],["2028-10-30","2028-11-03","Herbstferien"],["2028-12-23","2029-01-05","Weihnachtsferien"],["2029-03-26","2029-04-07","Osterferien"],["2029-05-22","2029-06-01","Pfingstferien"],["2029-07-26","2029-09-08","Sommerferien"],["2029-10-29","2029-11-02","Herbstferien"],["2029-12-22","2030-01-05","Weihnachtsferien"]],"BY":[["2024-12-23","2025-01-03","Weihnachtsferien"],["2025-03-03","2025-03-07","Frühjahrsferien"],["2025-04-14","2025-04-25","Osterferien"],["2025-06-10","2025-06-20","Pfingstferien"],["2025-08-01","2025-09-15","Sommerferien"],["2025-11-03","2025-11-07","Herbstferien"],["2025-11-19","2025-11-19","Buß- und Bettag"],["2025-12-22","2026-01-05","Weihnachtsferien"],["2026-02-16","2026-02-20","Frühjahrsferien"],["2026-03-30","2026-04-10","Osterferien"],["2026-05-26","2026-06-05","Pfingstferien"],["2026-08-03","2026-09-14","Sommerferien"],["2026-11-02","2026-11-06","Herbstferien"],["2026-11-18","2026-11-18","Buß- und Bettag"],["2026-12-24","2027-01-08","Weihnachtsferien"],["2027-02-08","2027-02-12","Frühjahrsferien"],["2027-03-22","2027-04-02","Osterferien"],["2027-05-18","2027-05-28","Pfingstferien"],["2027-08-02","2027-09-13","Sommerferien"],["2027-11-02","2027-11-05","Herbstferien"],["2027-11-17","2027-11-17","Buß- und Bettag"],["2027-12-24","2028-01-07","Weihnachtsferien"],["2028-02-28","2028-03-03","Frühjahrsferien"],["2028-04-10","2028-04-21","Osterferien"],["2028-06-06","2028-06-16","Pfingstferien"],["2028-07-31","2028-09-11","Sommerferien"],["2028-10-30","2028-11-03","Herbstferien"],["2028-11-22","2028-11-22","Buß- und Bettag"],["2028-12-23","2029-01-05","Weihnachtsferien"],["2029-02-12","2029-02-16","Frühjahrsferien"],["2029-03-26","2029-04-06","Osterferien"],["2029-05-22","2029-06-01","Pfingstferien"],["2029-07-30","2029-09-10","Sommerferien"],["2029-10-29","2029-11-02","Herbstferien"],["2029-11-21","2029-11-21","Buß- und Bettag"],["2029-12-24","2030-01-04","Weihnachtsferien"]],"HB":[["2024-12-23","2025-01-04","Weihnachtsferien"],["2025-02-03","2025-02-04","Halbjahresferien"],["2025-04-07","2025-04-19","Osterferien"],["2025-04-30","2025-05-02","Kirchentag und Tag nach dem 1. Mai"],["2025-05-30","2025-05-30","Tag nach Himmelfahrt"],["2025-06-10","2025-06-10","Pfingstferien"],["2025-07-03","2025-08-13","Sommerferien"],["2025-10-13","2025-10-25","Herbstferien"],["2025-12-22","2026-01-05","Weihnachtsferien"],["2026-02-02","2026-02-03","Halbjahresferien"],["2026-03-23","2026-04-07","Osterferien"],["2026-05-15","2026-05-15","Tag nach Himmelfahrt"],["2026-05-26","2026-05-26","Pfingstferien"],["2026-07-02","2026-08-12","Sommerferien"],["2026-10-12","2026-10-24","Herbstferien"],["2026-12-23","2027-01-09","Weihnachtsferien"],["2027-02-01","2027-02-02","Halbjahresferien"],["2027-03-22","2027-04-03","Osterferien"],["2027-05-07","2027-05-07","Tag nach Himmelfahrt"],["2027-05-18","2027-05-18","Pfingstferien"],["2027-07-08","2027-08-18","Sommerferien"],["2027-10-18","2027-10-30","Herbstferien"],["2027-12-23","2028-01-08","Weihnachtsferien"],["2028-01-31","2028-02-01","Halbjahresferien"],["2028-04-10","2028-04-22","Osterferien"],["2028-05-26","2028-05-26","Tag nach Himmelfahrt"],["2028-06-06","2028-06-06","Pfingstferien"],["2028-07-20","2028-08-30","Sommerferien"],["2028-10-02","2028-10-02","Tag vor dem 3. Oktober"],["2028-10-23","2028-11-04","Herbstferien"],["2028-12-27","2029-01-06","Weihnachtsferien"],["2029-02-01","2029-02-02","Halbjahresferien"],["2029-03-19","2029-04-03","Osterferien"],["2029-04-30","2029-04-30","Tag vor dem 1. Mai"],["2029-05-11","2029-05-11","Tag nach Himmelfahrt"],["2029-05-22","2029-05-22","Pfingstferien"],["2029-07-19","2029-08-29","Sommerferien"],["2029-10-04","2029-10-05","Tage nach dem 3. Oktober"],["2029-10-22","2029-11-02","Herbstferien"],["2029-12-21","2030-01-05","Weihnachtsferien"]],"HE":[["2024-12-23","2025-01-10","Weihnachtsferien"],["2025-04-07","2025-04-21","Osterferien"],["2025-07-07","2025-08-15","Sommerferien"],["2025-10-06","2025-10-18","Herbstferien"],["2025-12-22","2026-01-10","Weihnachtsferien"],["2026-03-30","2026-04-10","Osterferien"],["2026-06-29","2026-08-07","Sommerferien"],["2026-10-05","2026-10-17","Herbstferien"],["2026-12-23","2027-01-12","Weihnachtsferien"],["2027-03-22","2027-04-02","Osterferien"],["2027-06-28","2027-08-06","Sommerferien"],["2027-10-04","2027-10-16","Herbstferien"],["2027-12-23","2028-01-11","Weihnachtsferien"],["2028-04-03","2028-04-14","Osterferien"],["2028-07-03","2028-08-11","Sommerferien"],["2028-10-09","2028-10-20","Herbstferien"],["2028-12-27","2029-01-12","Weihnachtsferien"],["2029-03-29","2029-04-13","Osterferien"],["2029-07-16","2029-08-24","Sommerferien"],["2029-10-15","2029-10-26","Herbstferien"],["2029-12-24","2030-01-11","Weihnachtsferien"]],"HH":[["2024-12-20","2025-01-03","Weihnachtsferien"],["2025-01-31","2025-01-31","Halbjahrespause"],["2025-03-10","2025-03-21","Frühjahrsferien"],["2025-05-02","2025-05-02","Brückentag"],["2025-05-26","2025-05-30","Pfingstferien"],["2025-07-24","2025-09-03","Sommerferien"],["2025-10-20","2025-10-31","Herbstferien"],["2025-12-17","2026-01-02","Weihnachtsferien"],["2026-01-30","2026-01-30","Halbjahrespause"],["2026-03-02","2026-03-13","Frühjahrsferien"],["2026-05-11","2026-05-15","Pfingstferien"],["2026-07-09","2026-08-19","Sommerferien"],["2026-10-19","2026-10-30","Herbstferien"],["2026-12-21","2027-01-01","Weihnachtsferien"],["2027-01-29","2027-01-29","Halbjahrespause"],["2027-03-01","2027-03-12","Frühjahrsferien"],["2027-05-07","2027-05-14","Pfingstferien"],["2027-07-01","2027-08-11","Sommerferien"],["2027-10-11","2027-10-22","Herbstferien"],["2027-12-20","2027-12-31","Weihnachtsferien"],["2028-01-28","2028-01-28","Halbjahrespause"],["2028-03-06","2028-03-17","Frühjahrsferien"],["2028-05-22","2028-05-26","Pfingstferien"],["2028-07-03","2028-08-11","Sommerferien"],["2028-10-02","2028-10-13","Herbstferien"],["2028-10-30","2028-10-30","Brückentag"],["2028-12-18","2028-12-29","Weihnachtsferien"],["2029-02-02","2029-02-02","Halbjahrespause"],["2029-03-05","2029-03-16","Frühjahrsferien"],["2029-05-11","2029-05-18","Pfingstferien"],["2029-07-02","2029-08-10","Sommerferien"],["2029-10-01","2029-10-12","Herbstferien"],["2029-12-21","2030-01-04","Weihnachtsferien"]],"MV":[["2024-12-23","2025-01-04","Weihnachtsferien"],["2024-12-23","2025-01-06","Weihnachtsferien"],["2025-02-03","2025-02-08","Winterferien"],["2025-02-03","2025-02-14","Winterferien"],["2025-04-14","2025-04-23","Osterferien"],["2025-04-14","2025-04-25","Osterferien"],["2025-05-02","2025-05-02","Zusätzlicher Ferientag"],["2025-05-30","2025-05-30","Zusätzlicher Ferientag"],["2025-06-06","2025-06-10","Pfingstferien"],["2025-07-14","2025-08-30","Sommerferien"],["2025-07-28","2025-09-06","Sommerferien"],["2025-10-01","2025-10-01","Zusätzlicher Ferientag"],["2025-10-02","2025-10-02","Zusätzlicher Ferientag"],["2025-10-20","2025-10-24","Herbstferien"],["2025-10-20","2025-10-25","Herbstferien"],["2025-11-03","2025-11-03","Zusätzlicher Ferientag"],["2025-12-20","2026-01-03","Weihnachtsferien"],["2025-12-22","2026-01-03","Weihnachtsferien"],["2026-02-09","2026-02-14","Winterferien"],["2026-02-09","2026-02-20","Winterferien"],["2026-03-30","2026-04-08","Osterferien"],["2026-03-30","2026-04-10","Osterferien"],["2026-05-15","2026-05-15","Zusätzlicher Ferientag"],["2026-05-22","2026-05-26","Pfingstferien"],["2026-07-13","2026-08-22","Sommerferien"],["2026-07-13","2026-08-29","Sommerferien"],["2026-10-15","2026-10-24","Herbstferien"],["2026-10-19","2026-10-24","Herbstferien"],["2026-11-26","2026-11-26","Zusätzlicher Ferientag"],["2026-11-27","2026-11-27","Zusätzlicher Ferientag"],["2026-12-19","2027-01-02","Weihnachtsferien"],["2026-12-21","2027-01-02","Weihnachtsferien"],["2027-02-08","2027-02-13","Winterferien"],["2027-02-08","2027-02-19","Winterferien"],["2027-03-22","2027-04-02","Osterferien"],["2027-03-24","2027-04-02","Osterferien"],["2027-05-07","2027-05-07","Zusätzlicher Ferientag"],["2027-05-07","2027-05-07","Zusätzlicher Ferientag"],["2027-05-14","2027-05-18","Pfingstferien"],["2027-07-05","2027-08-14","Sommerferien"],["2027-07-12","2027-08-28","Sommerferien"],["2027-10-14","2027-10-23","Herbstferien"],["2027-10-16","2027-10-23","Herbstferien"],["2027-11-25","2027-11-25","Zusätzlicher Ferientag"],["2027-11-26","2027-11-26","Zusätzlicher Ferientag"],["2027-12-22","2027-12-31","Weihnachtsferien"],["2027-12-22","2028-01-04","Weihnachtsferien"],["2028-02-05","2028-02-12","Winterferien"],["2028-02-05","2028-02-17","Winterferien"],["2028-02-18","2028-02-18","Schulfrei"],["2028-03-09","2028-03-09","Zusätzlicher Ferientag"],["2028-03-10","2028-03-10","Zusätzlicher Ferientag"],["2028-04-12","2028-04-21","Osterferien"],["2028-05-26","2028-05-26","Zusätzlicher Ferientag"],["2028-06-02","2028-06-06","Pfingstferien"],["2028-06-26","2028-08-05","Sommerferien"],["2028-07-17","2028-09-02","Sommerferien"],["2028-10-02","2028-10-02","Zusätzlicher Ferientag"],["2028-10-02","2028-10-02","Zusätzlicher Ferientag"],["2028-10-23","2028-10-28","Herbstferien"],["2028-10-30","2028-10-30","Zusätzlicher Ferientag"],["2028-12-21","2029-01-02","Weihnachtsferien"],["2028-12-22","2029-01-02","Weihnachtsferien"],["2029-02-05","2029-02-10","Winterferien"],["2029-02-05","2029-02-16","Winterferien"],["2029-03-09","2029-03-09","Zusätzlicher Ferientag"],["2029-03-28","2029-04-06","Osterferien"],["2029-04-30","2029-04-30","Zusätzlicher Ferientag"],["2029-05-11","2029-05-11","Zusätzlicher Ferientag"],["2029-05-18","2029-05-22","Pfingstferien"],["2029-05-22","2029-05-22","Zusätzlicher Ferientag"],["2029-06-18","2029-07-28","Sommerferien"],["2029-07-16","2029-09-01","Sommerferien"],["2029-10-05","2029-10-05","Zusätzlicher Ferientag"],["2029-10-22","2029-10-27","Herbstferien"],["2029-10-29","2029-10-29","Zusätzlicher Ferientag"],["2029-10-30","2029-10-30","Zusätzlicher Ferientag"],["2029-12-21","2030-01-04","Weihnachtsferien"]],"NI":[["2024-12-23","2025-01-04","Weihnachtsferien"],["2025-02-03","2025-02-04","Halbjahresferien"],["2025-04-07","2025-04-19","Osterferien"],["2025-04-30","2025-04-30","Kirchentag"],["2025-05-02","2025-05-02","Tag nach dem 1. Mai"],["2025-05-30","2025-05-30","Tag nach Himmelfahrt"],["2025-06-10","2025-06-10","Pfingstferien"],["2025-07-03","2025-08-13","Sommerferien"],["2025-10-13","2025-10-25","Herbstferien"],["2025-12-22","2026-01-05","Weihnachtsferien"],["2026-02-02","2026-02-03","Halbjahresferien"],["2026-03-23","2026-04-07","Osterferien"],["2026-05-15","2026-05-15","Tag nach Himmelfahrt"],["2026-05-26","2026-05-26","Pfingstferien"],["2026-07-02","2026-08-12","Sommerferien"],["2026-10-12","2026-10-24","Herbstferien"],["2026-12-23","2027-01-09","Weihnachtsferien"],["2027-02-01","2027-02-02","Halbjahresferien"],["2027-03-22","2027-04-03","Osterferien"],["2027-05-07","2027-05-07","Tag nach Himmelfahrt"],["2027-05-18","2027-05-18","Pfingstferien"],["2027-07-08","2027-08-18","Sommerferien"],["2027-10-16","2027-10-30","Herbstferien"],["2027-12-23","2028-01-08","Weihnachtsferien"],["2028-01-31","2028-02-01","Halbjahresferien"],["2028-04-10","2028-04-22","Osterferien"],["2028-05-26","2028-05-26","Tag nach Himmelfahrt"],["2028-06-06","2028-06-06","Pfingstferien"],["2028-07-20","2028-08-30","Sommerferien"],["2028-10-02","2028-10-02","Tag vor dem 3. Oktober"],["2028-10-23","2028-11-04","Herbstferien"],["2028-12-27","2029-01-06","Weihnachtsferien"],["2029-02-01","2029-02-02","Halbjahresferien"],["2029-03-19","2029-04-03","Osterferien"],["2029-04-30","2029-04-30","Tag vor dem 1. Mai"],["2029-05-11","2029-05-11","Tag nach Himmelfahrt"],["2029-05-22","2029-05-22","Pfingstferien"],["2029-07-19","2029-08-29","Sommerferien"],["2029-10-04","2029-10-05","Tage nach dem 3. Oktober"],["2029-10-22","2029-11-02","Herbstferien"],["2029-12-21","2030-01-05","Weihnachtsferien"]],"NW":[["2024-12-23","2025-01-06","Weihnachtsferien"],["2025-04-14","2025-04-26","Osterferien"],["2025-06-10","2025-06-10","Pfingstferien"],["2025-07-14","2025-08-26","Sommerferien"],["2025-10-13","2025-10-25","Herbstferien"],["2025-12-22","2026-01-06","Weihnachtsferien"],["2026-03-30","2026-04-11","Osterferien"],["2026-05-26","2026-05-26","Pfingstferien"],["2026-07-20","2026-09-01","Sommerferien"],["2026-10-17","2026-10-31","Herbstferien"],["2026-12-23","2027-01-06","Weihnachtsferien"],["2027-03-22","2027-04-03","Osterferien"],["2027-05-18","2027-05-18","Pfingstferien"],["2027-07-19","2027-08-31","Sommerferien"],["2027-10-23","2027-11-06","Herbstferien"],["2027-12-24","2028-01-08","Weihnachtsferien"],["2028-04-10","2028-04-22","Osterferien"],["2028-07-10","2028-08-22","Sommerferien"],["2028-10-23","2028-11-04","Herbstferien"],["2028-12-21","2029-01-05","Weihnachtsferien"],["2029-03-26","2029-04-07","Osterferien"],["2029-05-22","2029-05-22","Pfingstferien"],["2029-07-02","2029-08-14","Sommerferien"],["2029-10-15","2029-10-27","Herbstferien"],["2029-12-20","2030-01-04","Weihnachtsferien"]],"RP":[["2024-12-23","2025-01-08","Weihnachtsferien"],["2025-04-14","2025-04-25","Osterferien"],["2025-07-07","2025-08-15","Sommerferien"],["2025-10-13","2025-10-24","Herbstferien"],["2025-12-22","2026-01-07","Weihnachtsferien"],["2026-03-30","2026-04-10","Osterferien"],["2026-06-29","2026-08-07","Sommerferien"],["2026-10-05","2026-10-16","Herbstferien"],["2026-12-23","2027-01-08","Weihnachtsferien"],["2027-03-22","2027-04-02","Osterferien"],["2027-06-28","2027-08-06","Sommerferien"],["2027-10-04","2027-10-15","Herbstferien"],["2027-12-23","2028-01-07","Weihnachtsferien"],["2028-04-10","2028-04-21","Osterferien"],["2028-07-03","2028-08-11","Sommerferien"],["2028-10-09","2028-10-20","Herbstferien"],["2028-12-21","2029-01-08","Weihnachtsferien"],["2029-03-26","2029-04-06","Osterferien"],["2029-07-16","2029-08-24","Sommerferien"],["2029-10-22","2029-11-02","Herbstferien"],["2029-12-24","2030-01-09","Weihnachtsferien"]],"SH":[["2024-12-19","2025-01-07","Weihnachtsferien"],["2025-04-11","2025-04-25","Osterferien"],["2025-05-30","2025-05-30","Himmelfahrt"],["2025-07-28","2025-08-30","Sommerferien"],["2025-07-28","2025-09-06","Sommerferien"],["2025-10-13","2025-10-30","Herbstferien"],["2025-10-20","2025-10-30","Herbstferien"],["2025-12-19","2026-01-06","Weihnachtsferien"],["2026-03-26","2026-04-10","Osterferien"],["2026-05-15","2026-05-15","Himmelfahrt"],["2026-07-04","2026-08-08","Sommerferien"],["2026-07-04","2026-08-15","Sommerferien"],["2026-10-05","2026-10-24","Herbstferien"],["2026-10-12","2026-10-24","Herbstferien"],["2026-12-21","2027-01-06","Weihnachtsferien"],["2027-03-30","2027-04-10","Osterferien"],["2027-05-07","2027-05-07","Himmelfahrt"],["2027-07-03","2027-08-07","Sommerferien"],["2027-07-03","2027-08-14","Sommerferien"],["2027-10-04","2027-10-23","Herbstferien"],["2027-10-11","2027-10-23","Herbstferien"],["2027-12-23","2028-01-08","Weihnachtsferien"],["2028-04-03","2028-04-15","Osterferien"],["2028-05-26","2028-05-26","Himmelfahrt"],["2028-06-24","2028-07-28","Sommerferien"],["2028-06-24","2028-08-04","Sommerferien"],["2028-10-09","2028-10-30","Herbstferien"],["2028-10-16","2028-10-30","Herbstferien"],["2028-12-21","2029-01-05","Weihnachtsferien"],["2029-03-23","2029-04-06","Osterferien"],["2029-05-11","2029-05-11","Himmelfahrt"],["2029-06-23","2029-07-27","Sommerferien"],["2029-06-23","2029-08-03","Sommerferien"],["2029-09-28","2029-10-19","Herbstferien"],["2029-10-08","2029-10-19","Herbstferien"],["2029-12-21","2030-01-08","Weihnachtsferien"]],"SL":[["2024-12-23","2025-01-03","Weihnachtsferien"],["2025-02-24","2025-03-04","Fastnachtsferien"],["2025-04-14","2025-04-25","Osterferien"],["2025-07-07","2025-08-14","Sommerferien"],["2025-10-13","2025-10-24","Herbstferien"],["2025-12-22","2026-01-02","Weihnachtsferien"],["2026-02-16","2026-02-20","Fastnachtsferien"],["2026-04-07","2026-04-17","Osterferien"],["2026-06-29","2026-08-07","Sommerferien"],["2026-10-05","2026-10-16","Herbstferien"],["2026-12-21","2026-12-31","Weihnachtsferien"],["2027-02-08","2027-02-12","Fastnachtsferien"],["2027-03-30","2027-04-09","Osterferien"],["2027-06-28","2027-08-06","Sommerferien"],["2027-10-04","2027-10-15","Herbstferien"],["2027-12-20","2027-12-31","Weihnachtsferien"],["2028-02-21","2028-02-29","Fastnachtsferien"],["2028-04-12","2028-04-21","Osterferien"],["2028-07-03","2028-08-11","Sommerferien"],["2028-10-09","2028-10-20","Herbstferien"],["2028-12-20","2029-01-02","Weihnachtsferien"],["2029-02-12","2029-02-16","Fastnachtsferien"],["2029-03-26","2029-04-06","Osterferien"],["2029-05-22","2029-05-25","Pfingstferien"],["2029-07-16","2029-08-24","Sommerferien"],["2029-10-22","2029-11-02","Herbstferien"],["2029-12-21","2030-01-04","Weihnachtsferien"]],"SN":[["2024-12-23","2025-01-03","Weihnachtsferien"],["2025-02-17","2025-03-01","Winterferien"],["2025-04-18","2025-04-25","Osterferien"],["2025-05-30","2025-05-30","Unterrichtsfreier Tag"],["2025-06-28","2025-08-08","Sommerferien"],["2025-10-06","2025-10-18","Herbstferien"],["2025-12-22","2026-01-02","Weihnachtsferien"],["2026-02-09","2026-02-21","Winterferien"],["2026-04-03","2026-04-10","Osterferien"],["2026-05-15","2026-05-15","Unterrichtsfreier Tag"],["2026-07-04","2026-08-14","Sommerferien"],["2026-10-12","2026-10-24","Herbstferien"],["2026-12-23","2027-01-02","Weihnachtsferien"],["2027-02-08","2027-02-19","Winterferien"],["2027-03-26","2027-04-02","Osterferien"],["2027-05-07","2027-05-07","Unterrichtsfreier Tag"],["2027-05-15","2027-05-18","Pfingstferien"],["2027-07-10","2027-08-20","Sommerferien"],["2027-10-11","2027-10-23","Herbstferien"],["2027-12-23","2028-01-01","Weihnachtsferien"],["2028-02-14","2028-02-26","Winterferien"],["2028-04-14","2028-04-22","Osterferien"],["2028-05-26","2028-05-26","Unterrichtsfreier Tag"],["2028-07-22","2028-09-01","Sommerferien"],["2028-10-23","2028-11-03","Herbstferien"],["2028-12-23","2029-01-03","Weihnachtsferien"],["2029-02-05","2029-02-16","Winterferien"],["2029-03-29","2029-04-06","Osterferien"],["2029-05-11","2029-05-11","Unterrichtsfreier Tag"],["2029-05-19","2029-05-22","Pfingstferien"],["2029-07-21","2029-08-31","Sommerferien"],["2029-10-22","2029-11-02","Herbstferien"],["2029-12-22","2030-01-04","Weihnachtsferien"]],"ST":[["2024-12-23","2025-01-04","Weihnachtsferien"],["2025-01-27","2025-01-31","Winterferien"],["2025-04-07","2025-04-19","Osterferien"],["2025-05-30","2025-05-30","Ferientag"],["2025-06-28","2025-08-08","Sommerferien"],["2025-10-13","2025-10-25","Herbstferien"],["2025-12-22","2026-01-05","Weihnachtsferien"],["2026-01-31","2026-02-06","Winterferien"],["2026-03-30","2026-04-04","Osterferien"],["2026-05-26","2026-05-29","Pfingstferien"],["2026-07-04","2026-08-14","Sommerferien"],["2026-10-19","2026-10-30","Herbstferien"],["2026-12-21","2027-01-02","Weihnachtsferien"],["2027-02-01","2027-02-06","Winterferien"],["2027-03-22","2027-03-27","Osterferien"],["2027-05-15","2027-05-22","Pfingstferien"],["2027-07-10","2027-08-20","Sommerferien"],["2027-10-18","2027-10-23","Herbstferien"],["2027-12-20","2027-12-31","Weihnachtsferien"],["2028-02-07","2028-02-12","Winterferien"],["2028-04-10","2028-04-22","Osterferien"],["2028-06-03","2028-06-10","Pfingstferien"],["2028-07-22","2028-09-01","Sommerferien"],["2028-10-02","2028-10-02","Ferientag"],["2028-10-30","2028-11-03","Herbstferien"],["2028-12-21","2029-01-02","Weihnachtsferien"],["2029-02-05","2029-02-10","Winterferien"],["2029-03-26","2029-03-31","Osterferien"],["2029-04-30","2029-04-30","Ferientag"],["2029-05-11","2029-05-25","Pfingstferien"],["2029-07-21","2029-08-31","Sommerferien"],["2029-10-29","2029-11-02","Herbstferien"],["2029-12-21","2030-01-05","Weihnachtsferien"]],"TH":[["2024-12-23","2025-01-03","Weihnachtsferien"],["2025-02-03","2025-02-08","Winterferien"],["2025-04-07","2025-04-19","Osterferien"],["2025-05-30","2025-05-30","Schulfreier Tag"],["2025-06-28","2025-08-08","Sommerferien"],["2025-10-06","2025-10-18","Herbstferien"],["2025-12-22","2026-01-03","Weihnachtsferien"],["2026-02-16","2026-02-21","Winterferien"],["2026-04-07","2026-04-17","Osterferien"],["2026-05-15","2026-05-15","Schulfreier Tag"],["2026-07-04","2026-08-14","Sommerferien"],["2026-10-12","2026-10-24","Herbstferien"],["2026-12-23","2027-01-02","Weihnachtsferien"],["2027-02-01","2027-02-06","Winterferien"],["2027-03-22","2027-04-03","Osterferien"],["2027-05-07","2027-05-07","Schulfreier Tag"],["2027-07-10","2027-08-20","Sommerferien"],["2027-10-09","2027-10-23","Herbstferien"],["2027-12-23","2027-12-31","Weihnachtsferien"],["2028-02-07","2028-02-12","Winterferien"],["2028-04-03","2028-04-15","Osterferien"],["2028-05-26","2028-05-26","Schulfreier Tag"],["2028-07-22","2028-09-01","Sommerferien"],["2028-10-23","2028-11-03","Herbstferien"],["2028-12-23","2029-01-05","Weihnachtsferien"],["2029-02-12","2029-02-17","Winterferien"],["2029-03-26","2029-04-07","Osterferien"],["2029-05-11","2029-05-11","Schulfreier Tag"],["2029-07-21","2029-08-31","Sommerferien"],["2029-10-22","2029-11-03","Herbstferien"],["2029-12-22","2030-01-04","Weihnachtsferien"]]};
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -773,6 +926,9 @@ class Component extends DCLogic {
       setupBal: '',
       resetStep: 0,
       stampTool: null,
+      calView: 'month',
+      setupHol: true,
+      setupFerien: false,
       rangeMode: false,
       anchor: null,
       sheet: null,
@@ -785,13 +941,17 @@ class Component extends DCLogic {
   }
 
   defaultSettings() {
-    return { country: null, region: null, weekHours: 35, workdays: [true,true,true,true,true,false,false], schoolDays: [false,false,false,false,false,false,false], vacDays: 30, autoBreak: false, kontoStart: this.iso(new Date()), startBalance: 0 };
+    return { country: null, region: null, weekHours: 35, workdays: [true,true,true,true,true,false,false], schoolDays: [false,false,false,false,false,false,false], vacDays: 30, autoBreak: false, kontoStart: this.iso(new Date()), startBalance: 0, useHol: true, useFerien: false, schoolEvery: 1, schoolAnchor: this.mondayOf(this.iso(new Date())) };
   }
 
   componentDidMount() {
     this._timer = setInterval(() => { this._quiet = true; this.setState({ now: Date.now() }); this._quiet = false; }, 30000);
-    this._vis = () => { if (!document.hidden) { this._quiet = true; this.setState({ now: Date.now() }); this._quiet = false; } };
+    this._vis = () => {
+      if (document.hidden) { if (this._t) clearTimeout(this._t); this.flush(); return; } // App verlässt den Vordergrund: sofort sichern
+      this._quiet = true; this.setState({ now: Date.now() }); this._quiet = false;
+    };
     document.addEventListener('visibilitychange', this._vis);
+    window.addEventListener('pagehide', this._vis);
     this.initDb();
   }
   componentWillUnmount() {
@@ -802,30 +962,44 @@ class Component extends DCLogic {
   // ---------- Speicher: JSON-Dateien auf dem Gerät, nichts im Browser-Speicher ----------
   quiet(patch) { this._quiet = true; this.setState(patch); this._quiet = false; }
 
-  // JSON-Dateien im privaten App-Ordner (Directory.Data): cfg.json, adj.json, m_JJJJ-MM.json
+  // JSON-Dateien im privaten App-Ordner (Directory.Data): cfg, adj, m_JJJJ-MM.
+  // Jede Datei gibt es doppelt (.json + .bak). Geschrieben wird erst .bak, dann .json, jeweils
+  // mit Gegenlesen. Stürzt die App mitten im Schreiben ab, bleibt immer eine heile Kopie übrig.
   fileStore(FS) {
     const D = 'DATA', P = 'lot';
-    const path = (id) => P + '/' + id + '.json';
+    const rd = async (n) => { try { const r = await FS.readFile({ path: P + '/' + n, directory: D, encoding: 'utf8' }); const o = JSON.parse(r.data); return (o && typeof o === 'object') ? o : null; } catch (e) { return null; } };
+    const wr = async (n, text) => {
+      await FS.writeFile({ path: P + '/' + n, directory: D, data: text, encoding: 'utf8', recursive: true });
+      const back = await FS.readFile({ path: P + '/' + n, directory: D, encoding: 'utf8' });
+      if (back.data !== text) throw new Error('verify');
+    };
     return {
       async get() {
         try { await FS.mkdir({ path: P, directory: D, recursive: true }); } catch (e) { /* existiert schon */ }
         const l = await FS.readdir({ path: P, directory: D });
+        const ids = new Set();
+        (l.files || []).forEach((f) => { const n = typeof f === 'string' ? f : f.name; const m = /^(.+)\.(json|bak)$/.exec(n); if (m) ids.add(m[1]); });
         const docs = [];
-        for (const f of (l.files || [])) {
-          const n = typeof f === 'string' ? f : f.name;
-          if (!/\.json$/.test(n)) continue;
-          try {
-            const r = await FS.readFile({ path: P + '/' + n, directory: D, encoding: 'utf8' });
-            const obj = JSON.parse(r.data);
-            docs.push({ id: n.slice(0, -5), data: () => obj });
-          } catch (e) { /* kaputte Datei überspringen */ }
+        let repaired = 0;
+        for (const id of ids) {
+          const a = await rd(id + '.json'), b = await rd(id + '.bak');
+          let obj = a;
+          if (!a || (b && (b.ts || 0) > (a.ts || 0))) { obj = b; if (obj) repaired++; }
+          if (obj) docs.push({ id: id, data: () => obj });
         }
-        return { docs: docs };
+        return { docs: docs, repaired: repaired };
       },
       doc(id) {
         return {
-          async set(v) { await FS.writeFile({ path: path(id), directory: D, data: JSON.stringify(v), encoding: 'utf8', recursive: true }); },
-          async delete() { try { await FS.deleteFile({ path: path(id), directory: D }); } catch (e) { /* schon weg */ } }
+          async set(v) {
+            const text = JSON.stringify(Object.assign({}, v, { ts: Date.now() }));
+            await wr(id + '.bak', text);
+            await wr(id + '.json', text);
+          },
+          async delete() {
+            try { await FS.deleteFile({ path: P + '/' + id + '.json', directory: D }); } catch (e) { /* schon weg */ }
+            try { await FS.deleteFile({ path: P + '/' + id + '.bak', directory: D }); } catch (e) { /* schon weg */ }
+          }
         };
       }
     };
@@ -856,6 +1030,9 @@ class Component extends DCLogic {
       const base = this.defaultSettings();
       const cs = (cfg && cfg.settings) || {};
       const settings = Object.assign(base, cs, {
+        useHol: cs.useHol !== false, useFerien: cs.useFerien === true,
+        schoolEvery: [1,2,3,4].indexOf(cs.schoolEvery) !== -1 ? cs.schoolEvery : 1,
+        schoolAnchor: /^\d{4}-\d\d-\d\d$/.test(cs.schoolAnchor || '') ? cs.schoolAnchor : base.schoolAnchor,
         workdays: Array.isArray(cs.workdays) && cs.workdays.length === 7 ? cs.workdays.slice() : base.workdays,
         schoolDays: Array.isArray(cs.schoolDays) && cs.schoolDays.length === 7 ? cs.schoolDays.slice() : base.schoolDays
       });
@@ -863,13 +1040,13 @@ class Component extends DCLogic {
       this.col = col;
       this.dirty = new Set();
       this.quiet({
-        loaded: true, sync: 'ok', saveErr: '',
+        loaded: true, sync: 'ok', saveErr: '', repaired: snap.repaired || 0,
         stamps: stamps, types: types, adjust: list,
         nextId: adj && adj.nextId ? adj.nextId : (list.reduce((m, x) => Math.max(m, x.id || 0), 0) + 1),
         balInput: cfg && typeof cfg.balInput === 'string' ? cfg.balInput : '',
         settings: settings,
         setup: !settings.country, setupFirst: !settings.country,
-        setupCountry: settings.country || 'DE', setupRegion: settings.region
+        setupCountry: settings.country || 'DE', setupRegion: settings.region, setupHol: settings.useHol, setupFerien: settings.useFerien
       });
     } catch (e) {
       this.col = null;
@@ -904,7 +1081,7 @@ class Component extends DCLogic {
   }
 
   async flush() {
-    if (!this.col) return;
+    if (!this.col || !this.dirty || this.dirty.size === 0) return;
     if (this._busy) { this._again = true; return; }
     this._busy = true;
     const keys = Array.from(this.dirty);
@@ -930,7 +1107,8 @@ class Component extends DCLogic {
       } catch (e) { failed = e; this.dirty.add(k); }
     }
     this._busy = false;
-    this.quiet({ sync: failed ? 'error' : (this.dirty.size ? 'pending' : 'ok'), saveErr: failed && failed.code ? failed.code : '' });
+    if (!failed) this._lastSave = Date.now();
+    this.quiet({ sync: failed ? 'error' : (this.dirty.size ? 'pending' : 'ok'), saveErr: failed ? (failed.code || failed.message || 'Fehler') : '', lastSave: this._lastSave || 0 });
     if (failed) this.schedule(5000);
     else if (this._again || this.dirty.size) { this._again = false; this.schedule(300); }
   }
@@ -1022,13 +1200,31 @@ class Component extends DCLogic {
   }
   hol(s) {
     const st = this.state.settings;
+    if (st.useHol === false) return null;
     return this.computeHol(parseInt(s.slice(0, 4), 10), st.country, st.region)[s] || null;
+  }
+  mondayOf(s) { return this.addDays(s, -this.wdIdx(this.parse(s))); }
+  // Schulferien (nur Deutschland, offizielle Daten); gibt den Namen oder null zurück
+  ferien(s) {
+    const st = this.state.settings;
+    if (!st.useFerien || st.country !== 'DE' || !st.region) return null;
+    const list = FERIEN[st.region];
+    if (!list) return null;
+    for (let i = 0; i < list.length; i++) { if (s >= list[i][0] && s <= list[i][1]) return list[i][2]; }
+    return null;
+  }
+  // Ist das eine Berufsschulwoche? (jede Woche oder alle N Wochen, ab Ankerwoche)
+  schoolWeek(s, st) {
+    const n = Math.max(1, st.schoolEvery || 1);
+    if (n === 1) return true;
+    const diff = Math.round((this.parse(this.mondayOf(s)) - this.parse(st.schoolAnchor || this.mondayOf(s))) / 604800000);
+    return (((diff % n) + n) % n) === 0;
   }
 
   defType(s, st) {
     if (this.hol(s)) return 'feiertag';
     const wd = this.wdIdx(this.parse(s));
-    if (st.workdays[wd] && st.schoolDays[wd]) return 'schule';
+    if (st.workdays[wd] && st.schoolDays[wd] && this.schoolWeek(s, st) && !this.ferien(s)) return 'schule';
     return 'arbeit';
   }
 
@@ -1061,7 +1257,7 @@ class Component extends DCLogic {
       autoCut = Math.max(0, req - pause);
       worked -= autoCut;
     }
-    return { s: s, d: d, wd: wd, hol: hol, type: type, explicit: explicit, soll: soll, baseSoll: baseSoll, times: times, worked: worked, pause: pause, autoCut: autoCut, open: open, incomplete: incomplete, saldo: worked - soll };
+    return { s: s, d: d, wd: wd, hol: hol, ferien: this.ferien(s), type: type, explicit: explicit, soll: soll, baseSoll: baseSoll, times: times, worked: worked, pause: pause, autoCut: autoCut, open: open, incomplete: incomplete, saldo: worked - soll };
   }
 
   kontoThrough(sel, S, todayIso) {
@@ -1142,6 +1338,7 @@ class Component extends DCLogic {
     const todayIso = this.iso(nd);
     const nowMin = nd.getHours() * 60 + nd.getMinutes();
     const colorOf = (v) => (Math.round(v) > 0 ? GREEN : (Math.round(v) < 0 ? RED : INK));
+    const selColor = (v, onDark) => (onDark ? (Math.round(v) > 0 ? '#8FD0A0' : (Math.round(v) < 0 ? '#E8A59B' : PAPER)) : colorOf(v));
 
     const sel = this.dayInfo(S.date, S);
     const d = sel.d;
@@ -1230,46 +1427,125 @@ class Component extends DCLogic {
     }
 
     // ---- Kalender ----
-    const first = new Date(S.calY, S.calM, 1, 12);
-    const lead = this.wdIdx(first);
-    const dim = new Date(S.calY, S.calM + 1, 0).getDate();
-    const totalCells = Math.ceil((lead + dim) / 7) * 7;
-    const cells = [];
-    let mIst = 0, mSoll = 0;
-    for (let i = 0; i < totalCells; i++) {
-      const dd = new Date(S.calY, S.calM, 1 - lead + i, 12);
-      const s = this.iso(dd);
-      if (dd.getMonth() !== S.calM) { cells.push({ inMonth: false, outMonth: true }); continue; }
-      const di = this.dayInfo(s, S);
+    const TR0 = 300, TRS = 960; // Zeitleiste 05:00–21:00
+    const seg = (a, b2) => {
+      let l = (a - TR0) / TRS * 100, w = (b2 - a) / TRS * 100;
+      l = Math.max(0, Math.min(98.5, l)); w = Math.max(1.6, Math.min(100 - l, w));
+      return { l: l.toFixed(2), w: w.toFixed(2) };
+    };
+    const tlOf = (di) => {
+      const t = di.times, out = [];
+      for (let i = 0; i < t.length; i += 2) {
+        const a2 = this.toMin(t[i]);
+        let b2;
+        if (i + 1 < t.length) b2 = this.toMin(t[i + 1]); else if (di.open) b2 = nowMin; else b2 = a2 + 12;
+        out.push(seg(a2, Math.max(b2, a2 + 6)));
+      }
+      return out;
+    };
+    const kindOf = (di) => {
+      if (di.type === 'feiertag') return (di.hol || 'Feiertag').toUpperCase();
+      if (di.type !== 'arbeit') return this.TL[di.type].toUpperCase();
+      if (di.ferien) return 'SCHULFERIEN · ' + di.ferien.toUpperCase();
+      if (!st.workdays[di.wd]) return 'FREI';
+      return 'ARBEITSTAG';
+    };
+    const lineTexts = (di) => {
+      const t = di.times, out = [];
+      for (let i = 0; i < t.length; i += 2) {
+        if (i + 1 < t.length) out.push({ text: t[i] + ' – ' + t[i + 1] });
+        else out.push({ text: t[i] + ' – ' + (di.open ? 'JETZT' : '?') });
+      }
+      return out;
+    };
+    const FER_BG = 'repeating-linear-gradient(135deg, #EDE4C6 0, #EDE4C6 3px, ' + PANEL + ' 3px, ' + PANEL + ' 7px)';
+    const dayLook = (s2, di, selected) => {
       let code = '', codeColor = INK, hours = '', hoursColor = INK2;
       if (TC[di.type] && (di.type !== 'arbeit' || di.explicit)) { code = TC[di.type][0]; codeColor = TC[di.type][1]; }
       if (di.worked > 0) hours = this.fmt(di.worked);
-      else if (!code && di.soll > 0 && s < todayIso && s >= st.kontoStart) { hours = 'FEHLT'; hoursColor = RED; }
-      let bg = PANEL, fg = INK, ring = 'none';
+      else if (!code && di.soll > 0 && s2 < todayIso && s2 >= st.kontoStart) { hours = 'FEHLT'; hoursColor = RED; }
+      let bg = PANEL, fg = INK, ring = 'none', track = '#E3DAC2', bar = INK;
+      if (di.ferien && !code) bg = FER_BG;
       if (!st.workdays[di.wd] && !code && di.worked === 0) { bg = PAPER; fg = MUTED; }
-      if (s === todayIso) ring = 'inset 0 0 0 2px ' + accent;
-      if (!S.stampTool && s === S.date) { bg = INK; fg = PAPER; codeColor = PAPER; hoursColor = PAPER; ring = 'none'; }
-      if (S.anchor === s) { bg = 'repeating-linear-gradient(135deg, #E3DAC2 0, #E3DAC2 4px, ' + PANEL + ' 4px, ' + PANEL + ' 8px)'; ring = 'inset 0 0 0 2px ' + INK; }
-      if (s >= st.kontoStart && s <= todayIso && !(s === todayIso && di.times.length === 0)) { mIst += di.worked; mSoll += di.soll; }
-      const h = this.hash(s);
-      cells.push({
-        inMonth: true, outMonth: false,
-        num: String(dd.getDate()), bg: bg, fg: fg, ring: ring,
-        code: code, codeColor: codeColor, hasCode: !!code && !hours,
-        tf: this.stickerTf(s), ink: (0.78 + (h % 22) / 100).toFixed(2),
-        hours: hours, hoursColor: hoursColor, hasHours: !!hours,
-        aria: this.DOWL[di.wd] + ', ' + dd.getDate() + '. ' + this.MONL[dd.getMonth()] + (code ? ', ' + this.TL[di.type] : '') + (hours ? ', ' + hours : ''),
-        tap: () => { if (this.state.stampTool) this.applyTool(s); else this.setState({ date: s }); }
-      });
+      if (s2 === todayIso) ring = 'inset 0 0 0 2px ' + accent;
+      if (selected) { bg = INK; fg = PAPER; codeColor = PAPER; hoursColor = hours === 'FEHLT' ? '#E8A59B' : PAPER; ring = 'none'; track = '#4D473B'; bar = PAPER; }
+      if (S.anchor === s2) { bg = 'repeating-linear-gradient(135deg, #E3DAC2 0, #E3DAC2 4px, ' + PANEL + ' 4px, ' + PANEL + ' 8px)'; ring = 'inset 0 0 0 2px ' + INK; fg = INK; bar = INK; track = '#E3DAC2'; }
+      return { code: code, codeColor: codeColor, hours: hours, hoursColor: hoursColor, bg: bg, fg: fg, ring: ring, track: track, bar: bar };
+    };
+    const isWeek = S.calView === 'week';
+    const tapDay = (s2) => () => { if (this.state.stampTool) this.applyTool(s2); else this.setState({ date: s2 }); };
+    const cells = [];
+    let mIst = 0, mSoll = 0;
+    if (!isWeek) {
+      const first = new Date(S.calY, S.calM, 1, 12);
+      const lead = this.wdIdx(first);
+      const dim = new Date(S.calY, S.calM + 1, 0).getDate();
+      const totalCells = Math.ceil((lead + dim) / 7) * 7;
+      for (let i = 0; i < totalCells; i++) {
+        const dd = new Date(S.calY, S.calM, 1 - lead + i, 12);
+        const s2 = this.iso(dd);
+        if (dd.getMonth() !== S.calM) { cells.push({ inMonth: false, outMonth: true }); continue; }
+        const di = this.dayInfo(s2, S);
+        const lk = dayLook(s2, di, !S.stampTool && s2 === S.date);
+        if (s2 >= st.kontoStart && s2 <= todayIso && !(s2 === todayIso && di.times.length === 0)) { mIst += di.worked; mSoll += di.soll; }
+        const h = this.hash(s2);
+        const tIn = di.times.length ? di.times[0] : '';
+        let tOut = '';
+        if (di.times.length > 1) tOut = di.times.length % 2 === 0 ? di.times[di.times.length - 1] : '…';
+        else if (di.times.length === 1) tOut = di.open ? 'läuft' : '?';
+        cells.push({
+          inMonth: true, outMonth: false,
+          num: String(dd.getDate()), bg: lk.bg, fg: lk.fg, ring: lk.ring, track: lk.track, bar: lk.bar,
+          code: lk.code, codeColor: lk.codeColor, hasCode: !!lk.code,
+          tf: this.stickerTf(s2), ink: (0.78 + (h % 22) / 100).toFixed(2),
+          hours: lk.hours, hoursColor: lk.hoursColor, hasHours: !!lk.hours,
+          tIn: tIn, tOut: tOut, hasTimes: di.times.length > 0,
+          tl: tlOf(di),
+          aria: this.DOWL[di.wd] + ', ' + dd.getDate() + '. ' + this.MONL[dd.getMonth()] + (lk.code ? ', ' + this.TL[di.type] : '') + (di.ferien ? ', Schulferien' : '') + (di.times.length ? ', ' + di.times.join(' ') : ''),
+          tap: tapDay(s2)
+        });
+      }
     }
+    // Wochenansicht: jede Stempelung des Tages, komplett ausgeschrieben
+    const weekRows = [];
+    const wMon = this.mondayOf(S.date);
+    let wIstC = 0, wSollC = 0;
+    if (isWeek) {
+      for (let i = 0; i < 7; i++) {
+        const s2 = this.addDays(wMon, i);
+        const di = this.dayInfo(s2, S);
+        const lk = dayLook(s2, di, !S.stampTool && s2 === S.date);
+        if (s2 >= st.kontoStart && s2 <= todayIso && !(s2 === todayIso && di.times.length === 0)) { wIstC += di.worked; wSollC += di.soll; }
+        const lines = lineTexts(di);
+        const kind = kindOf(di);
+        let note = '';
+        if (di.times.length === 0) { if (kind !== 'ARBEITSTAG') note = kind; else if (lk.hours === 'FEHLT') note = 'FEHLT'; }
+        else if (di.type !== 'arbeit' || di.ferien) note = kind;
+        if (di.times.length === 0 && !note) note = s2 === todayIso ? 'NOCH NICHTS GESTEMPELT' : '–';
+        const h = this.hash(s2);
+        weekRows.push({
+          dow: this.DOW[di.wd], num: String(di.d.getDate()), bg: lk.bg, fg: lk.fg, ring: lk.ring, track: lk.track, bar: lk.bar,
+          code: lk.code, codeColor: lk.codeColor, hasCode: !!lk.code, tf: this.stickerTf(s2), ink: (0.78 + (h % 22) / 100).toFixed(2),
+          lines: lines, note: note, hasNote: !!note, tl: tlOf(di),
+          hours: di.worked > 0 ? this.fmt(di.worked) : (di.soll > 0 && lk.hours === 'FEHLT' ? 'FEHLT' : '–'),
+          saldo: (di.worked > 0 || di.soll > 0) && s2 >= st.kontoStart && s2 <= todayIso ? this.sfmt(di.saldo) : '',
+          saldoColor: selColor(di.saldo, s2 === S.date && !S.stampTool),
+          aria: this.DOWL[di.wd] + ', ' + di.d.getDate() + '. ' + this.MONL[di.d.getMonth()] + (di.times.length ? ', ' + di.times.join(' ') : ''),
+          tap: tapDay(s2)
+        });
+      }
+    }
+    const wEnd = this.parse(this.addDays(wMon, 6)), wStart = this.parse(wMon);
+    const ist = isWeek ? wIstC : mIst, soll = isWeek ? wSollC : mSoll;
     const cal = {
-      month: this.MONL[S.calM].toUpperCase(),
-      year: String(S.calY),
-      cells: cells,
-      ist: this.fmt(mIst),
-      soll: this.fmt(mSoll),
-      saldo: this.sfmt(mIst - mSoll),
-      saldoColor: colorOf(mIst - mSoll)
+      isMonth: !isWeek, isWeek: isWeek,
+      mBg: !isWeek ? INK : PANEL, mFg: !isWeek ? PAPER : INK, wBg: isWeek ? INK : PANEL, wFg: isWeek ? PAPER : INK,
+      month: isWeek ? 'KW ' + this.pad(this.isoWeek(wStart)) : this.MONL[S.calM].toUpperCase(),
+      year: isWeek ? (this.pad(wStart.getDate()) + '.' + (wStart.getMonth() === wEnd.getMonth() ? '' : this.pad(wStart.getMonth() + 1) + '.') + '–' + this.pad(wEnd.getDate()) + '.' + this.pad(wEnd.getMonth() + 1) + '.') : String(S.calY),
+      cells: cells, weekRows: weekRows,
+      sumLabel: isWeek ? 'WOCHE' : 'MONAT',
+      ist: this.fmt(ist), soll: this.fmt(soll), saldo: this.sfmt(ist - soll), saldoColor: colorOf(ist - soll),
+      legend: 'FT = FEIERTAG · BS = BERUFSSCHULE' + (st.useHol === false ? ' · FEIERTAGE AUS' : '') + (st.useFerien && st.country === 'DE' ? ' · SCHRAFFUR = SCHULFERIEN ' + (st.region || '') : '') + ' · BALKEN = GESTEMPELTE ZEIT 05–21 UHR'
     };
 
     // ---- Stempelkasten ----
@@ -1300,7 +1576,22 @@ class Component extends DCLogic {
     if (sel.type === 'feiertag') dayKind = (sel.hol || 'Feiertag').toUpperCase();
     else if (sel.type !== 'arbeit') dayKind = this.TL[sel.type].toUpperCase();
     else if (!st.workdays[sel.wd]) dayKind = 'FREI';
-    const dayLine = { kind: dayKind + ' · STEMPELUNGEN ÖFFNEN' };
+    if (sel.type === 'arbeit' && sel.ferien && st.workdays[sel.wd]) dayKind = 'SCHULFERIEN · ' + sel.ferien.toUpperCase();
+    const rowsD = [];
+    for (let i = 0; i < times.length; i += 2) {
+      const a2 = this.toMin(times[i]);
+      if (i + 1 < times.length) rowsD.push({ text: times[i] + ' – ' + times[i + 1], dur: this.fmt(this.toMin(times[i + 1]) - a2), weight: 700, color: INK });
+      else rowsD.push({ text: times[i] + ' – ' + (sel.open ? 'läuft' : '?'), dur: sel.open ? this.fmt(nowMin - a2) : 'OFFEN', weight: 700, color: sel.open ? GREEN : RED });
+      if (i + 2 < times.length && i + 1 < times.length) rowsD.push({ text: 'Pause', dur: this.fmt(this.toMin(times[i + 2]) - this.toMin(times[i + 1])), weight: 500, color: INK2 });
+    }
+    const tickD = [6, 9, 12, 15, 18, 21].map((hh) => ({ l: ((hh * 60 - TR0) / TRS * 100).toFixed(2), label: String(hh) }));
+    const dayLine = {
+      kind: dayKind + ' · STEMPELUNGEN ÖFFNEN',
+      showBlocks: !isWeek,
+      rows: rowsD, hasRows: rowsD.length > 0, noRows: rowsD.length === 0,
+      tl: tlOf(sel), ticks: tickD,
+      emptyText: sel.type === 'arbeit' && !sel.ferien ? (st.workdays[sel.wd] ? 'NOCH KEINE STEMPELUNG' : 'FREIER TAG') : dayKind
+    };
 
     // ---- Urlaubskonto ----
     const year = parseInt(todayIso.slice(0, 4), 10);
@@ -1400,8 +1691,28 @@ class Component extends DCLogic {
       kontoStart: st.kontoStart,
       balInput: S.balInput,
       regionLabel: regionLabel,
-      holCount: year + ': ' + holThisYear + ' FEIERTAGE AN WERKTAGEN'
+      holCount: (st.useHol === false ? 'FEIERTAGE AUS' : year + ': ' + holThisYear + ' FEIERTAGE AN WERKTAGEN') + (st.useFerien && st.country === 'DE' ? ' · FERIEN AN' : ''),
+      useHol: st.useHol !== false, holBg: st.useHol !== false ? accent : PANEL, holKnob: st.useHol !== false ? PAPER : INK, holLeft: st.useHol !== false ? 28 : 3,
+      useFerien: !!st.useFerien, ferBg: st.useFerien ? accent : PANEL, ferKnob: st.useFerien ? PAPER : INK, ferLeft: st.useFerien ? 28 : 3,
+      hasFerien: st.country === 'DE'
     };
+    const everyN = Math.max(1, st.schoolEvery || 1);
+    const everyChips = [[1, 'JEDE WOCHE'], [2, 'ALLE 2'], [3, 'ALLE 3'], [4, 'ALLE 4']].map((e) => {
+      const on = everyN === e[0];
+      return { label: e[1], on: on, aria: e[0] === 1 ? 'Berufsschule jede Woche' : 'Berufsschule alle ' + e[0] + ' Wochen', bg: on ? INK : PANEL, fg: on ? PAPER : INK, tap: () => this.updSettings({ schoolEvery: e[0], schoolAnchor: this.state.settings.schoolAnchor || this.mondayOf(todayIso) }) };
+    });
+    const thisMon = this.mondayOf(todayIso);
+    const thisIsSchool = this.schoolWeek(todayIso, st);
+    const thisWeekChips = [[true, 'SCHULE'], [false, 'SCHULFREI']].map((e) => {
+      const on = thisIsSchool === e[0];
+      // Anker so setzen, dass diese Woche Schule ist bzw. die nächste Woche Schule ist
+      return { label: e[1], on: on, bg: on ? INK : PANEL, fg: on ? PAPER : INK, tap: () => this.updSettings({ schoolAnchor: e[0] ? thisMon : this.addDays(thisMon, 7) }) };
+    });
+    const nextSchool = [];
+    for (let i = 0, w2 = thisMon; i < 60 && nextSchool.length < 4; i++, w2 = this.addDays(w2, 7)) {
+      if (this.schoolWeek(w2, st)) nextSchool.push('KW ' + this.pad(this.isoWeek(this.parse(w2))));
+    }
+    const sch = { multi: everyN > 1, kw: this.pad(this.isoWeek(this.parse(thisMon))), next: everyN === 1 ? 'SCHULE IN JEDER WOCHE' : 'NÄCHSTE SCHULWOCHEN: ' + nextSchool.join(' · ') };
     const regionShort = st.country === 'AT' ? 'ÖSTERREICH' : (st.region ? this.REGL[st.region].toUpperCase() : '–');
 
     // ---- Einrichtung ----
@@ -1418,9 +1729,15 @@ class Component extends DCLogic {
         const on = sr === r[0];
         return { label: r[1], on: on, bg: on ? INK : PANEL, fg: on ? PAPER : INK, tap: () => this.setState({ setupRegion: r[0] }) };
       }),
-      stepHours: sc === 'DE' ? '03' : '02',
-      stepVac: sc === 'DE' ? '04' : '03',
-      stepBal: sc === 'DE' ? '05' : '04',
+      stepHol: sc === 'DE' ? '03' : '02',
+      stepHours: sc === 'DE' ? '04' : '03',
+      stepVac: sc === 'DE' ? '05' : '04',
+      stepBal: sc === 'DE' ? '06' : '05',
+      hol: S.setupHol, holBg: S.setupHol ? accent : PANEL, holKnob: S.setupHol ? PAPER : INK, holLeft: S.setupHol ? 28 : 3,
+      ferien: S.setupFerien && sc === 'DE', ferBg: S.setupFerien ? accent : PANEL, ferKnob: S.setupFerien ? PAPER : INK, ferLeft: S.setupFerien ? 28 : 3,
+      hasFerien: sc === 'DE',
+      toggleHol: () => this.setState({ setupHol: !this.state.setupHol }),
+      toggleFerien: () => this.setState({ setupFerien: !this.state.setupFerien }),
       hasBal: S.setupFirst,
       balVal: S.setupBal,
       onBal: (e) => this.setState({ setupBal: e.target.value }),
@@ -1434,7 +1751,7 @@ class Component extends DCLogic {
         const c = this.state;
         const okNow = c.setupCountry === 'AT' || (c.setupCountry === 'DE' && !!c.setupRegion);
         if (!okNow) return;
-        const patch = { country: c.setupCountry, region: c.setupCountry === 'AT' ? 'AT' : c.setupRegion };
+        const patch = { country: c.setupCountry, region: c.setupCountry === 'AT' ? 'AT' : c.setupRegion, useHol: c.setupHol, useFerien: c.setupCountry === 'DE' && c.setupFerien };
         if (c.setupFirst) {
           const n = parseFloat(String(c.setupBal).replace(',', '.'));
           patch.kontoStart = this.iso(new Date());
@@ -1446,7 +1763,7 @@ class Component extends DCLogic {
     };
 
     const sy = {
-      ok: ['GESPEICHERT', GREEN, 'AUF DEM GERÄT GESPEICHERT'],
+      ok: ['GESPEICHERT', GREEN, 'AUF DEM GERÄT GESPEICHERT' + (S.lastSave ? ' · ' + this.hhmm(new Date(S.lastSave).getHours() * 60 + new Date(S.lastSave).getMinutes()) : '') + ' · DOPPELT ABGESICHERT' + (S.repaired ? ' · ' + S.repaired + ' DATEI(EN) REPARIERT' : '')],
       pending: ['SPEICHERT …', INK2, 'WIRD GESPEICHERT …'],
       error: ['FEHLER', RED, 'SPEICHERN FEHLGESCHLAGEN' + (S.saveErr ? ' (' + S.saveErr + ')' : '') + ' · NEUER VERSUCH LÄUFT'],
       off: ['NICHT GESPEICHERT', RED, 'SPEICHER NICHT ERREICHBAR' + (S.saveErr ? ' (' + S.saveErr + ')' : '') + ' · ÄNDERUNGEN GEHEN BEIM SCHLIESSEN VERLOREN'],
@@ -1530,8 +1847,18 @@ class Component extends DCLogic {
       showDayLine: !S.stampTool,
       dayLine: dayLine,
       regionShort: regionShort,
-      prevMonth: () => { const c = this.state; const m = c.calM - 1; this.setState(m < 0 ? { calM: 11, calY: c.calY - 1 } : { calM: m }); },
-      nextMonth: () => { const c = this.state; const m = c.calM + 1; this.setState(m > 11 ? { calM: 0, calY: c.calY + 1 } : { calM: m }); },
+      prevMonth: () => {
+        const c = this.state;
+        if (c.calView === 'week') { const d2 = this.addDays(c.date, -7); const p = this.parse(d2); this.setState({ date: d2, calY: p.getFullYear(), calM: p.getMonth(), anchor: null }); return; }
+        const m = c.calM - 1; this.setState(m < 0 ? { calM: 11, calY: c.calY - 1 } : { calM: m });
+      },
+      nextMonth: () => {
+        const c = this.state;
+        if (c.calView === 'week') { const d2 = this.addDays(c.date, 7); const p = this.parse(d2); this.setState({ date: d2, calY: p.getFullYear(), calM: p.getMonth(), anchor: null }); return; }
+        const m = c.calM + 1; this.setState(m > 11 ? { calM: 0, calY: c.calY + 1 } : { calM: m });
+      },
+      setMonthView: () => { const p = this.parse(this.state.date); this.setState({ calView: 'month', calY: p.getFullYear(), calM: p.getMonth(), anchor: null }); },
+      setWeekView: () => this.setState({ calView: 'week', anchor: null }),
 
       vac: vac,
       vacRanges: vacRanges,
@@ -1567,14 +1894,17 @@ class Component extends DCLogic {
       setupOpen: S.setup && S.loaded,
       loading: !S.loaded,
       setup: setup,
-      openSetup: () => this.setState({ setup: true, setupFirst: !st.country, setupCountry: st.country || 'DE', setupRegion: st.region }),
+      openSetup: () => this.setState({ setup: true, setupFirst: !st.country, setupCountry: st.country || 'DE', setupRegion: st.region, setupHol: st.useHol !== false, setupFerien: !!st.useFerien }),
       wdChips: mkChips('workdays', ' ist Arbeitstag', ' ist frei'),
       schoolChips: mkChips('schoolDays', ' ist Berufsschultag', ' ist kein Berufsschultag'),
+      everyChips: everyChips, thisWeekChips: thisWeekChips, sch: sch,
       hrsMinus: () => this.updSettings({ weekHours: Math.max(1, this.state.settings.weekHours - 0.5) }),
       hrsPlus: () => this.updSettings({ weekHours: Math.min(60, this.state.settings.weekHours + 0.5) }),
       vacMinus: () => this.updSettings({ vacDays: Math.max(0, this.state.settings.vacDays - 1) }),
       vacPlus: () => this.updSettings({ vacDays: Math.min(60, this.state.settings.vacDays + 1) }),
       toggleAuto: () => this.updSettings({ autoBreak: !this.state.settings.autoBreak }),
+      toggleHol: () => this.updSettings({ useHol: this.state.settings.useHol === false }),
+      toggleFerien: () => this.updSettings({ useFerien: !this.state.settings.useFerien }),
       onBalance: (e) => { const v = e.target.value; const n = parseFloat(String(v).replace(',', '.')); this.setState({ balInput: v }); this.updSettings({ startBalance: isFinite(n) ? Math.round(n * 60) : 0 }); },
       onKontoStart: (e) => { if (/^\d{4}-\d\d-\d\d$/.test(e.target.value)) this.updSettings({ kontoStart: e.target.value }); }
     };

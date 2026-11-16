@@ -11,14 +11,16 @@ Stempeluhr für Android. Ein Button, kein Kommen/Gehen-Gewähle: Die Reihenfolge
 - Nachtragen und Ändern: alles wird neu berechnet
 - Gesetzliche Pause (ab 6 Std. 30 Min., ab 9 Std. 45 Min.) optional automatisch abziehen
 - Kalender mit Stempelkasten: Urlaub, Berufsschule, Krank, Ausgleich, Arbeit
-- Feste Berufsschultage und frei wählbare Arbeitstage
-- Feiertage für alle 16 deutschen Bundesländer und Österreich, offline berechnet
+- Monatsansicht mit Zeitbalken pro Tag, Wochenansicht mit allen Stempelzeiten, Tageskarte mit Blöcken und Pausen
+- Feste Berufsschultage mit Rhythmus (jede Woche oder alle 2 bis 4 Wochen) und frei wählbare Arbeitstage
+- Feiertage für alle 16 deutschen Bundesländer und Österreich, offline berechnet, optional
+- Schulferien (amtliche Daten der OpenHolidays API, 2025 bis 2029, fest eingebaut), optional; Berufsschule entfällt in den Ferien. Neu holen: `python3 tools/fetch-ferien.py 2025 2029`
 - Urlaubskonto und manuelle Stundenkonto-Buchungen
 - Startdatum und Startsaldo für den Umstieg aus einem alten System
 
 ## Daten
 
-Alle Daten liegen als JSON-Dateien im privaten App-Speicher (`lot/cfg.json`, `lot/adj.json`, `lot/m_JJJJ-MM.json`). Kein Konto, keine Cloud, kein Tracking, keine Netzwerkzugriffe. Nichts im Browser-Speicher.
+Alle Daten liegen als JSON-Dateien im privaten App-Speicher (`lot/cfg.json`, `lot/adj.json`, `lot/m_JJJJ-MM.json`). Jede Datei wird doppelt geschrieben (`.json` und `.bak`, mit Gegenlesen); bei einer beschädigten Datei greift die Kopie. Kein Konto, keine Cloud, kein Tracking, keine Netzwerkzugriffe. Nichts im Browser-Speicher.
 
 ## Bauen
 
