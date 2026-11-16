@@ -721,33 +721,31 @@ WIRD ALS GEHEN EINGETRAGEN
 </div>
 </sc-if>
 
-<div style="display: flex; flex-direction: column">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: #4D473B; padding-bottom: 6px; border-bottom: 1.5px solid #1F1C17">{{setup.stepHol}} · OPTIONAL</span>
-<div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid #CBBF9F">
-<div style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 0; min-width: 0">
-<span style="font-size: 17px; font-weight: 600">Feiertage</span>
-<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Gesetzliche Feiertage automatisch eintragen.</span>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 1px; min-width: 0">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: #4D473B">{{setup.stepHol}} · FEIERTAGE</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4D473B">{{setup.holSub}}</span>
 </div>
-<button role="switch" aria-label="Feiertage ein oder aus" aria-checked="{{setup.hol}}" onClick="{{setup.toggleHol}}" style="flex: none; width: 60px; height: 44px; padding: 0; background: none; border: 0; display: flex; align-items: center">
+<button role="switch" aria-label="Feiertage ein oder aus" aria-checked="{{setup.hol}}" onClick="{{setup.toggleHol}}" style="flex: none; width: 56px; height: 44px; padding: 0; background: none; border: 0; display: flex; align-items: center">
 <span style="display: flex; align-items: center; width: 56px; height: 30px; box-sizing: border-box; border: 1.5px solid #1F1C17; background: {{setup.holBg}}">
 <span style="width: 22px; height: 22px; background: {{setup.holKnob}}; margin-left: {{setup.holLeft}}px; transition: margin-left 0.12s"></span>
 </span>
 </button>
 </div>
+
 <sc-if value="{{setup.hasFerien}}" hint-placeholder-val="{{ true }}">
-<div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid #CBBF9F">
-<div style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 0; min-width: 0">
-<span style="font-size: 17px; font-weight: 600">Schulferien</span>
-<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Amtliche Ferien deines Bundeslands im Kalender zeigen.</span>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 1px; min-width: 0">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: #4D473B">{{setup.stepFer}} · SCHULFERIEN</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4D473B">{{setup.ferSub}}</span>
 </div>
-<button role="switch" aria-label="Schulferien ein oder aus" aria-checked="{{setup.ferien}}" onClick="{{setup.toggleFerien}}" style="flex: none; width: 60px; height: 44px; padding: 0; background: none; border: 0; display: flex; align-items: center">
+<button role="switch" aria-label="Schulferien ein oder aus" aria-checked="{{setup.ferien}}" onClick="{{setup.toggleFerien}}" style="flex: none; width: 56px; height: 44px; padding: 0; background: none; border: 0; display: flex; align-items: center">
 <span style="display: flex; align-items: center; width: 56px; height: 30px; box-sizing: border-box; border: 1.5px solid #1F1C17; background: {{setup.ferBg}}">
 <span style="width: 22px; height: 22px; background: {{setup.ferKnob}}; margin-left: {{setup.ferLeft}}px; transition: margin-left 0.12s"></span>
 </span>
 </button>
 </div>
 </sc-if>
-</div>
 
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
 <div style="display: flex; flex-direction: column; gap: 1px">
@@ -1577,6 +1575,7 @@ class Component extends DCLogic {
         if (di.times.length === 0) { if (kind !== 'ARBEITSTAG') note = kind; else if (lk.hours === 'FEHLT') note = 'FEHLT'; }
         else if (di.type !== 'arbeit' || di.ferien) note = kind;
         if (di.times.length === 0 && !note) note = s2 === todayIso ? 'NOCH NICHTS GESTEMPELT' : '–';
+        if (di.autoCut > 0) note = (note ? note + ' · ' : '') + 'PAUSE AUTOM. −' + this.fmt(di.autoCut);
         const h = this.hash(s2);
         weekRows.push({
           dow: this.DOW[di.wd], num: String(di.d.getDate()), bg: lk.bg, fg: lk.fg, ring: lk.ring, track: lk.track, bar: lk.bar,
@@ -1639,6 +1638,8 @@ class Component extends DCLogic {
       else rowsD.push({ text: times[i] + ' – ' + (sel.open ? 'läuft' : '?'), dur: sel.open ? this.fmt(nowMin - a2) : 'OFFEN', weight: 700, color: sel.open ? GREEN : RED });
       if (i + 2 < times.length && i + 1 < times.length) rowsD.push({ text: 'Pause', dur: this.fmt(this.toMin(times[i + 2]) - this.toMin(times[i + 1])), weight: 500, color: INK2 });
     }
+    if (sel.autoCut > 0) rowsD.push({ text: 'Pause automatisch', dur: '−' + this.fmt(sel.autoCut), weight: 500, color: INK2 });
+    if (rowsD.length > 1) rowsD.push({ text: 'Arbeitszeit', dur: this.fmt(sel.worked), weight: 700, color: INK });
     const tickD = [6, 9, 12, 15, 18, 21].map((hh) => ({ l: ((hh * 60 - TR0) / TRS * 100).toFixed(2), label: String(hh) }));
     const dayLine = {
       kind: dayKind + ' · STEMPELUNGEN ÖFFNEN',
@@ -1788,9 +1789,12 @@ class Component extends DCLogic {
         return { label: r[1], on: on, bg: on ? INK : PANEL, fg: on ? PAPER : INK, tap: () => this.setState({ setupRegion: r[0] }) };
       }),
       stepHol: sc === 'DE' ? '03' : '02',
-      stepHours: sc === 'DE' ? '04' : '03',
-      stepVac: sc === 'DE' ? '05' : '04',
-      stepBal: sc === 'DE' ? '06' : '05',
+      stepFer: '04',
+      stepHours: sc === 'DE' ? '05' : '03',
+      stepVac: sc === 'DE' ? '06' : '04',
+      stepBal: sc === 'DE' ? '07' : '05',
+      holSub: S.setupHol ? 'WERDEN AUTOMATISCH EINGETRAGEN' : 'AUS · KEINE FEIERTAGE',
+      ferSub: S.setupFerien ? 'IM KALENDER SICHTBAR' : 'AUS · NICHT ANZEIGEN',
       hol: S.setupHol, holBg: S.setupHol ? accent : PANEL, holKnob: S.setupHol ? PAPER : INK, holLeft: S.setupHol ? 28 : 3,
       ferien: S.setupFerien && sc === 'DE', ferBg: S.setupFerien ? accent : PANEL, ferKnob: S.setupFerien ? PAPER : INK, ferLeft: S.setupFerien ? 28 : 3,
       hasFerien: sc === 'DE',
@@ -1799,7 +1803,7 @@ class Component extends DCLogic {
       hasBal: S.setupFirst,
       balVal: S.setupBal,
       onBal: (e) => this.setState({ setupBal: e.target.value }),
-      preview: ready ? year + ': ' + prevKeys.length + ' GESETZLICHE FEIERTAGE FÜR ' + this.REGL[sc === 'AT' ? 'AT' : sr].toUpperCase() : 'NOCH KEIN BUNDESLAND GEWÄHLT',
+      preview: ready && !S.setupHol ? 'FEIERTAGE AUSGESCHALTET' : ready ? year + ': ' + prevKeys.length + ' GESETZLICHE FEIERTAGE FÜR ' + this.REGL[sc === 'AT' ? 'AT' : sr].toUpperCase() : 'NOCH KEIN BUNDESLAND GEWÄHLT',
       blocked: !ready,
       btnBg: ready ? accent : PANEL,
       btnFg: ready ? PAPER : MUTED,
@@ -1858,7 +1862,7 @@ class Component extends DCLogic {
       hasIncomplete: sel.incomplete,
       hasAutoCut: sel.autoCut > 0,
       autoCutText: this.fmt(sel.autoCut) + ' Std.',
-      pauseTotal: this.fmt(sel.pause),
+      pauseTotal: this.fmt(sel.pause + sel.autoCut) + (sel.autoCut > 0 ? (sel.pause > 0 ? ' · DAVON ' + this.fmt(sel.autoCut) + ' AUTOM.' : ' · AUTOM.') : ''),
       openAdd: () => this.setState({ sheetErr: '', sheet: { mode: 'new', idx: -1 }, sheetTime: S.date === todayIso ? this.hhmm(nowMin) : '08:00' }),
       stampNow: () => {
         const n = new Date();
