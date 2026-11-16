@@ -12,7 +12,7 @@ Stempeluhr für Android. Ein Button, kein Kommen/Gehen-Gewähle: Die Reihenfolge
 - Gesetzliche Pause (ab 6 Std. 30 Min., ab 9 Std. 45 Min.) optional automatisch abziehen
 - Kalender mit Stempelkasten: Urlaub, Berufsschule, Krank, Ausgleich, Arbeit
 - Monatsansicht mit Zeitbalken pro Tag, Wochenansicht mit allen Stempelzeiten, Tageskarte mit Blöcken und Pausen
-- Feste Berufsschultage mit Rhythmus (jede Woche oder alle 2 bis 4 Wochen) und frei wählbare Arbeitstage
+- Berufsschultage pro Wochentag: jede Woche, gerade oder ungerade Kalenderwochen und frei wählbare Arbeitstage
 - Feiertage für alle 16 deutschen Bundesländer und Österreich, offline berechnet, optional
 - Schulferien (amtliche Daten der OpenHolidays API, 2025 bis 2029, fest eingebaut), optional; Berufsschule entfällt in den Ferien. Neu holen: `python3 tools/fetch-ferien.py 2025 2029`
 - Urlaubskonto und manuelle Stundenkonto-Buchungen

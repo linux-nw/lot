@@ -531,32 +531,21 @@ NACHTRAGEN
 </div>
 <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 0; border-bottom: 1px solid #CBBF9F">
 <div style="display: flex; flex-direction: column; gap: 1px">
-<span style="font-size: 17px; font-weight: 600">Feste Berufsschultage</span>
-<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Diese Wochentage zählen in Schulwochen automatisch als Schule. Blockunterricht trägst du im Kalender ein.</span>
+<span style="font-size: 17px; font-weight: 600">Berufsschultage</span>
+<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Pro Wochentag: nie, jede Woche, nur gerade oder nur ungerade Kalenderwochen. Blockunterricht trägst du im Kalender ein.</span>
 </div>
-<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr))">
-<sc-for list="{{schoolChips}}" as="w" hint-placeholder-count="7">
-<button aria-label="{{w.aria}}" aria-pressed="{{w.on}}" onClick="{{w.tap}}" style="min-height: 44px; border-radius: 0; margin-left: -1.5px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; padding: 0; background: {{w.bg}}; color: {{w.fg}}; border: 1.5px solid #1F1C17">{{w.label}}</button>
-</sc-for>
-</div>
-<div style="display: flex; flex-direction: column; gap: 6px; padding-top: 6px">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.12em; color: #4D473B">RHYTHMUS</span>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{schoolRows}}" as="r" hint-placeholder-count="5">
+<div style="display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 8px; align-items: center">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; color: {{r.color}}">{{r.label}}</span>
 <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
-<sc-for list="{{everyChips}}" as="w" hint-placeholder-count="4">
-<button aria-label="{{w.aria}}" aria-pressed="{{w.on}}" onClick="{{w.tap}}" style="min-height: 44px; border-radius: 0; margin-left: -1.5px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; padding: 0 2px; background: {{w.bg}}; color: {{w.fg}}; border: 1.5px solid #1F1C17">{{w.label}}</button>
+<sc-for list="{{r.opts}}" as="o" hint-placeholder-count="4">
+<button aria-label="{{o.aria}}" aria-pressed="{{o.on}}" onClick="{{o.tap}}" style="min-height: 42px; border-radius: 0; margin-left: -1.5px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700; padding: 0 1px; background: {{o.bg}}; color: {{o.fg}}; border: 1.5px solid #1F1C17">{{o.label}}</button>
 </sc-for>
 </div>
 </div>
-<sc-if value="{{sch.multi}}" hint-placeholder-val="{{ false }}">
-<div style="display: flex; flex-direction: column; gap: 6px">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.12em; color: #4D473B">DIESE WOCHE (KW {{sch.kw}}) IST</span>
-<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr))">
-<sc-for list="{{thisWeekChips}}" as="w" hint-placeholder-count="2">
-<button aria-pressed="{{w.on}}" onClick="{{w.tap}}" style="min-height: 44px; border-radius: 0; margin-left: -1.5px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; padding: 0 2px; background: {{w.bg}}; color: {{w.fg}}; border: 1.5px solid #1F1C17">{{w.label}}</button>
 </sc-for>
 </div>
-</div>
-</sc-if>
 <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #1F1C17; line-height: 1.5">{{sch.next}}</span>
 </div>
 </div>
@@ -941,7 +930,7 @@ class Component extends DCLogic {
   }
 
   defaultSettings() {
-    return { country: null, region: null, weekHours: 35, workdays: [true,true,true,true,true,false,false], schoolDays: [false,false,false,false,false,false,false], vacDays: 30, autoBreak: false, kontoStart: this.iso(new Date()), startBalance: 0, useHol: true, useFerien: false, schoolEvery: 1, schoolAnchor: this.mondayOf(this.iso(new Date())) };
+    return { country: null, region: null, weekHours: 35, workdays: [true,true,true,true,true,false,false], schoolRules: [0,0,0,0,0,0,0], vacDays: 30, autoBreak: false, kontoStart: this.iso(new Date()), startBalance: 0, useHol: true, useFerien: false, schoolEvery: 1, schoolAnchor: this.mondayOf(this.iso(new Date())) };
   }
 
   componentDidMount() {
@@ -1031,10 +1020,9 @@ class Component extends DCLogic {
       const cs = (cfg && cfg.settings) || {};
       const settings = Object.assign(base, cs, {
         useHol: cs.useHol !== false, useFerien: cs.useFerien === true,
-        schoolEvery: [1,2,3,4].indexOf(cs.schoolEvery) !== -1 ? cs.schoolEvery : 1,
-        schoolAnchor: /^\d{4}-\d\d-\d\d$/.test(cs.schoolAnchor || '') ? cs.schoolAnchor : base.schoolAnchor,
+        schoolRules: this.migrateRules(cs, base),
         workdays: Array.isArray(cs.workdays) && cs.workdays.length === 7 ? cs.workdays.slice() : base.workdays,
-        schoolDays: Array.isArray(cs.schoolDays) && cs.schoolDays.length === 7 ? cs.schoolDays.slice() : base.schoolDays
+        schoolDays: undefined
       });
       const list = adj && Array.isArray(adj.list) ? adj.list.map((x) => ({ id: x.id, date: x.date, min: x.min, note: x.note || '' })) : [];
       this.col = col;
@@ -1213,18 +1201,28 @@ class Component extends DCLogic {
     for (let i = 0; i < list.length; i++) { if (s >= list[i][0] && s <= list[i][1]) return list[i][2]; }
     return null;
   }
-  // Ist das eine Berufsschulwoche? (jede Woche oder alle N Wochen, ab Ankerwoche)
-  schoolWeek(s, st) {
-    const n = Math.max(1, st.schoolEvery || 1);
-    if (n === 1) return true;
-    const diff = Math.round((this.parse(this.mondayOf(s)) - this.parse(st.schoolAnchor || this.mondayOf(s))) / 604800000);
-    return (((diff % n) + n) % n) === 0;
+  // Regeln pro Wochentag: 0 = nie, 1 = jede Woche, 2 = gerade KW, 3 = ungerade KW
+  migrateRules(cs, base) {
+    if (Array.isArray(cs.schoolRules) && cs.schoolRules.length === 7) return cs.schoolRules.map((x) => ([0, 1, 2, 3].indexOf(x) !== -1 ? x : 0));
+    if (Array.isArray(cs.schoolDays) && cs.schoolDays.length === 7) {
+      let par = 1;
+      if (cs.schoolEvery === 2 && /^\d{4}-\d\d-\d\d$/.test(cs.schoolAnchor || '')) par = this.isoWeek(this.parse(cs.schoolAnchor)) % 2 === 0 ? 2 : 3;
+      return cs.schoolDays.map((x) => (x ? par : 0));
+    }
+    return base.schoolRules;
+  }
+  schoolDay(s, wd, st) {
+    const r = (st.schoolRules || [])[wd] || 0;
+    if (r === 0) return false;
+    if (r === 1) return true;
+    const even = this.isoWeek(this.parse(s)) % 2 === 0;
+    return r === 2 ? even : !even;
   }
 
   defType(s, st) {
     if (this.hol(s)) return 'feiertag';
     const wd = this.wdIdx(this.parse(s));
-    if (st.workdays[wd] && st.schoolDays[wd] && this.schoolWeek(s, st) && !this.ferien(s)) return 'schule';
+    if (st.workdays[wd] && this.schoolDay(s, wd, st) && !this.ferien(s)) return 'schule';
     return 'arbeit';
   }
 
@@ -1696,23 +1694,25 @@ class Component extends DCLogic {
       useFerien: !!st.useFerien, ferBg: st.useFerien ? accent : PANEL, ferKnob: st.useFerien ? PAPER : INK, ferLeft: st.useFerien ? 28 : 3,
       hasFerien: st.country === 'DE'
     };
-    const everyN = Math.max(1, st.schoolEvery || 1);
-    const everyChips = [[1, 'JEDE WOCHE'], [2, 'ALLE 2'], [3, 'ALLE 3'], [4, 'ALLE 4']].map((e) => {
-      const on = everyN === e[0];
-      return { label: e[1], on: on, aria: e[0] === 1 ? 'Berufsschule jede Woche' : 'Berufsschule alle ' + e[0] + ' Wochen', bg: on ? INK : PANEL, fg: on ? PAPER : INK, tap: () => this.updSettings({ schoolEvery: e[0], schoolAnchor: this.state.settings.schoolAnchor || this.mondayOf(todayIso) }) };
-    });
     const thisMon = this.mondayOf(todayIso);
-    const thisIsSchool = this.schoolWeek(todayIso, st);
-    const thisWeekChips = [[true, 'SCHULE'], [false, 'SCHULFREI']].map((e) => {
-      const on = thisIsSchool === e[0];
-      // Anker so setzen, dass diese Woche Schule ist bzw. die nächste Woche Schule ist
-      return { label: e[1], on: on, bg: on ? INK : PANEL, fg: on ? PAPER : INK, tap: () => this.updSettings({ schoolAnchor: e[0] ? thisMon : this.addDays(thisMon, 7) }) };
-    });
+    const RL = [[0, 'AUS'], [1, 'JEDE'], [2, 'GERADE'], [3, 'UNGER.']];
+    const schoolRows = this.DOW.map((l, i) => ({
+      label: l, color: st.workdays[i] ? INK : MUTED,
+      opts: RL.map((o) => {
+        const on = ((st.schoolRules || [])[i] || 0) === o[0];
+        return { label: o[1], on: on, bg: on ? INK : PANEL, fg: on ? PAPER : INK,
+          aria: this.DOWL[i] + ': ' + ['kein Berufsschultag', 'Berufsschule jede Woche', 'Berufsschule in geraden Kalenderwochen', 'Berufsschule in ungeraden Kalenderwochen'][o[0]],
+          tap: () => { const r = (this.state.settings.schoolRules || [0,0,0,0,0,0,0]).slice(); r[i] = o[0]; this.updSettings({ schoolRules: r }); } };
+      })
+    }));
+    const kwNow = this.isoWeek(this.parse(todayIso));
     const nextSchool = [];
-    for (let i = 0, w2 = thisMon; i < 60 && nextSchool.length < 4; i++, w2 = this.addDays(w2, 7)) {
-      if (this.schoolWeek(w2, st)) nextSchool.push('KW ' + this.pad(this.isoWeek(this.parse(w2))));
+    for (let i = 0; i < 40 && nextSchool.length < 5; i++) {
+      const s2 = this.addDays(todayIso, i);
+      const w = this.wdIdx(this.parse(s2));
+      if (st.workdays[w] && this.schoolDay(s2, w, st) && !this.ferien(s2)) nextSchool.push(this.DOW[w] + ' ' + this.fmtShort(s2).slice(0, 2) + '.');
     }
-    const sch = { multi: everyN > 1, kw: this.pad(this.isoWeek(this.parse(thisMon))), next: everyN === 1 ? 'SCHULE IN JEDER WOCHE' : 'NÄCHSTE SCHULWOCHEN: ' + nextSchool.join(' · ') };
+    const sch = { next: 'JETZT KW ' + kwNow + ' (' + (kwNow % 2 === 0 ? 'GERADE' : 'UNGERADE') + ')' + (nextSchool.length ? ' · NÄCHSTE: ' + nextSchool.join(', ') : ' · KEINE SCHULTAGE EINGETRAGEN') };
     const regionShort = st.country === 'AT' ? 'ÖSTERREICH' : (st.region ? this.REGL[st.region].toUpperCase() : '–');
 
     // ---- Einrichtung ----
@@ -1896,8 +1896,7 @@ class Component extends DCLogic {
       setup: setup,
       openSetup: () => this.setState({ setup: true, setupFirst: !st.country, setupCountry: st.country || 'DE', setupRegion: st.region, setupHol: st.useHol !== false, setupFerien: !!st.useFerien }),
       wdChips: mkChips('workdays', ' ist Arbeitstag', ' ist frei'),
-      schoolChips: mkChips('schoolDays', ' ist Berufsschultag', ' ist kein Berufsschultag'),
-      everyChips: everyChips, thisWeekChips: thisWeekChips, sch: sch,
+      schoolRows: schoolRows, sch: sch,
       hrsMinus: () => this.updSettings({ weekHours: Math.max(1, this.state.settings.weekHours - 0.5) }),
       hrsPlus: () => this.updSettings({ weekHours: Math.min(60, this.state.settings.weekHours + 0.5) }),
       vacMinus: () => this.updSettings({ vacDays: Math.max(0, this.state.settings.vacDays - 1) }),
