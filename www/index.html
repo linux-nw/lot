@@ -35,29 +35,33 @@ button:focus-visible,input:focus-visible{outline:2px solid #1F1C17;outline-offse
 <div style="padding: 16px 20px 40px; display: flex; flex-direction: column; gap: 16px">
 
 <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1.5px solid #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; color: #4D473B">
-<span>LOT</span>
-<span>KW {{head.kw}} · <span style="color: {{syncUi.color}}">{{syncUi.text}}</span></span>
+<span style="display: flex; align-items: center; gap: 7px"><span style="width: 9px; height: 9px; box-sizing: border-box; background: #87C896; border: 1.5px solid #1F1C17"></span>LOT</span>
+<sc-if value="{{head.notToday}}" hint-placeholder-val="{{ false }}">
+<button onClick="{{goToday}}" style="margin: -12px 0 -8px; min-height: 36px; padding: 0 0 0 10px; background: none; border: 0; color: #2E6A3E; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; display: flex; align-items: center; gap: 6px">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="square" aria-hidden="true"><path d="M9 14L4 9l5-5M4 9h11a5 5 0 010 10h-3"/></svg>ZURÜCK ZU HEUTE</button>
+</sc-if>
 </div>
 
 <div style="display: flex; align-items: center; gap: 8px">
 <button aria-label="Vorheriger Tag" onClick="{{prevDay}}" style="flex: none; width: 44px; height: 44px; border: 1.5px solid #1F1C17; border-radius: 0; background: #FBF8F0; color: #1F1C17; display: flex; align-items: center; justify-content: center; padding: 0">
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
 </button>
-<button aria-label="Zurück zu heute" onClick="{{goToday}}" style="flex: 1 1 0; min-width: 0; background: none; border: 0; padding: 0; color: #1F1C17; display: flex; flex-direction: column; align-items: center; gap: 4px">
+<button aria-label="{{head.full}}, tippen springt zu heute" onClick="{{goToday}}" style="flex: 1 1 0; min-width: 0; background: none; border: 0; padding: 0; color: #1F1C17; display: flex; flex-direction: column; align-items: center; gap: 4px">
 <span style="display: flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap">
 <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; padding: 1px 5px; border: 1.5px solid #1F1C17">{{head.dow}}</span>
 <span style="font-size: 44px; font-weight: 700; line-height: 1; letter-spacing: -0.01em">{{head.dm}}</span>
 <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; color: #4D473B">{{head.year}}</span>
 </span>
 <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #4D473B">{{head.sub}}</span>
-<sc-if value="{{head.notToday}}" hint-placeholder-val="{{ false }}">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; color: {{accent}}">ZURÜCK ZU HEUTE</span>
-</sc-if>
 </button>
 <button aria-label="Nächster Tag" onClick="{{nextDay}}" style="flex: none; width: 44px; height: 44px; border: 1.5px solid #1F1C17; border-radius: 0; background: #FBF8F0; color: #1F1C17; display: flex; align-items: center; justify-content: center; padding: 0">
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
 </button>
 </div>
+
+<sc-if value="{{syncUi.alert}}" hint-placeholder-val="{{ false }}">
+<button onClick="{{goSet}}" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 40px; padding: 6px 12px; border: 1.5px solid #B03A2E; border-radius: 0; background: #F7E4DF; color: #8A2A20; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-align: left">SPEICHERN KLAPPT GERADE NICHT<span>OPTIONEN →</span></button>
+</sc-if>
 
 <div style="border: 1.5px solid #1F1C17; background: #FBF8F0">
 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr))">
@@ -155,7 +159,7 @@ NACHTRAGEN
 <div style="padding: 16px 20px 40px; display: flex; flex-direction: column; gap: 16px">
 
 <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1.5px solid #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; color: #4D473B">
-<span>LOT</span>
+<span style="display: flex; align-items: center; gap: 7px"><span style="width: 9px; height: 9px; box-sizing: border-box; background: #87C896; border: 1.5px solid #1F1C17"></span>LOT</span>
 <span>KALENDER</span>
 </div>
 
@@ -172,36 +176,24 @@ NACHTRAGEN
 </button>
 </div>
 
-<div style="display: flex">
-<button aria-pressed="{{cal.isMonth}}" onClick="{{setMonthView}}" style="flex: 1 1 0; min-height: 38px; border-radius: 0; border: 1.5px solid #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; background: {{cal.mBg}}; color: {{cal.mFg}}">MONAT</button>
-<button aria-pressed="{{cal.isWeek}}" onClick="{{setWeekView}}" style="flex: 1 1 0; min-height: 38px; border-radius: 0; border: 1.5px solid #1F1C17; border-left: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; background: {{cal.wBg}}; color: {{cal.wFg}}">WOCHE · ALLE ZEITEN</button>
-</div>
-
-<sc-if value="{{cal.isMonth}}" hint-placeholder-val="{{ true }}">
 <div style="display: flex; flex-direction: column; gap: 4px">
 <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; color: #4D473B">
-<span style="padding-left: 5px">MO</span><span style="padding-left: 5px">DI</span><span style="padding-left: 5px">MI</span><span style="padding-left: 5px">DO</span><span style="padding-left: 5px">FR</span><span style="padding-left: 5px">SA</span><span style="padding-left: 5px">SO</span>
+<span style="padding-left: 4px">MO</span><span style="padding-left: 4px">DI</span><span style="padding-left: 4px">MI</span><span style="padding-left: 4px">DO</span><span style="padding-left: 4px">FR</span><span style="padding-left: 4px">SA</span><span style="padding-left: 4px">SO</span>
 </div>
 <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; background: #CBBF9F; border: 1.5px solid #1F1C17">
 <sc-for list="{{cal.cells}}" as="c" hint-placeholder-count="35">
 <sc-if value="{{c.inMonth}}" hint-placeholder-val="{{ true }}">
-<button aria-label="{{c.aria}}" onClick="{{c.tap}}" style="height: 98px; box-sizing: border-box; padding: 4px 4px 5px; border: 0; border-radius: 0; display: flex; flex-direction: column; justify-content: space-between; align-items: stretch; text-align: left; overflow: hidden; background: {{c.bg}}; color: {{c.fg}}; box-shadow: {{c.ring}}">
-<span style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2px">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600">{{c.num}}</span>
+<button aria-label="{{c.aria}}" onClick="{{c.tap}}" style="aspect-ratio: 1 / 1; min-width: 0; box-sizing: border-box; padding: 3px 3px 4px; border: 0; border-radius: 0; display: flex; flex-direction: column; justify-content: space-between; align-items: stretch; text-align: left; overflow: hidden; background: {{c.bg}}; color: {{c.fg}}; box-shadow: {{c.ring}}">
+<span style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; line-height: 1.25; padding: 0 2px; background: {{c.numBg}}; color: {{c.numFg}}">{{c.num}}</span>
 <sc-if value="{{c.hasCode}}" hint-placeholder-val="{{ false }}">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; font-weight: 700; line-height: 1.2; padding: 0 2px; border: 1.5px solid {{c.codeColor}}; color: {{c.codeColor}}; opacity: {{c.ink}}; transform: {{c.tf}}">{{c.code}}</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; font-weight: 700; line-height: 1.2; padding: 0 1px; border: 1.5px solid {{c.codeColor}}; color: {{c.codeColor}}; opacity: {{c.ink}}; transform: {{c.tf}}">{{c.code}}</span>
 </sc-if>
 </span>
-<span style="display: flex; flex-direction: column; font-family: 'IBM Plex Mono', monospace; line-height: 1.25">
 <sc-if value="{{c.hasHours}}" hint-placeholder-val="{{ false }}">
-<span style="font-size: 11px; font-weight: 700; color: {{c.hoursColor}}">{{c.hours}}</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700; line-height: 1; color: {{c.hoursColor}}">{{c.hours}}</span>
 </sc-if>
-<sc-if value="{{c.hasTimes}}" hint-placeholder-val="{{ false }}">
-<span style="font-size: 9px; font-weight: 500; opacity: 0.85">{{c.tIn}}</span>
-<span style="font-size: 9px; font-weight: 500; opacity: 0.85">{{c.tOut}}</span>
-</sc-if>
-</span>
-<span style="position: relative; display: block; height: 6px; background: {{c.track}}">
+<span style="position: relative; display: block; height: 4px; background: {{c.track}}">
 <sc-for list="{{c.tl}}" as="g" hint-placeholder-count="2">
 <span style="position: absolute; top: 0; bottom: 0; left: {{g.l}}%; width: {{g.w}}%; background: {{c.bar}}"></span>
 </sc-for>
@@ -209,43 +201,44 @@ NACHTRAGEN
 </button>
 </sc-if>
 <sc-if value="{{c.outMonth}}" hint-placeholder-val="{{ false }}">
-<div style="height: 98px; background: #EDE6D3"></div>
+<div style="aspect-ratio: 1 / 1; background: #EDE6D3"></div>
 </sc-if>
 </sc-for>
 </div>
 </div>
-</sc-if>
 
-<sc-if value="{{cal.isWeek}}" hint-placeholder-val="{{ false }}">
-<div style="display: flex; flex-direction: column; gap: 1px; background: #CBBF9F; border: 1.5px solid #1F1C17">
-<sc-for list="{{cal.weekRows}}" as="r" hint-placeholder-count="7">
-<button aria-label="{{r.aria}}" onClick="{{r.tap}}" style="display: grid; grid-template-columns: 50px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 10px 11px; border: 0; border-radius: 0; text-align: left; background: {{r.bg}}; color: {{r.fg}}; box-shadow: {{r.ring}}">
-<span style="display: flex; flex-direction: column; align-items: flex-start; gap: 3px">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; opacity: 0.8">{{r.dow}}</span>
-<span style="font-size: 24px; font-weight: 700; line-height: 1">{{r.num}}</span>
-<sc-if value="{{r.hasCode}}" hint-placeholder-val="{{ false }}">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700; line-height: 1.2; padding: 0 3px; border: 1.5px solid {{r.codeColor}}; color: {{r.codeColor}}; opacity: {{r.ink}}; transform: {{r.tf}}">{{r.code}}</span>
+<sc-if value="{{showDayLine}}" hint-placeholder-val="{{ true }}">
+<div style="border: 1.5px solid #1F1C17; background: #FBF8F0; padding: 12px 14px 12px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px">
+<span style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<span style="font-size: 20px; font-weight: 700; line-height: 1.1">{{head.dow}} {{head.dm}}</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4D473B">{{dayLine.kind}}</span>
+</span>
+<span style="flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-family: 'IBM Plex Mono', monospace;">
+<span style="font-size: 14px; font-weight: 600">{{sum.worked}} / {{sum.soll}}</span>
+<span style="font-size: 12px; font-weight: 700; color: {{sum.saldoColor}}">{{sum.saldo}}</span>
+</span>
+</div>
+<sc-if value="{{dayLine.hasRows}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; border-top: 1px solid #CBBF9F">
+<sc-for list="{{dayLine.rows}}" as="rw" hint-placeholder-count="3">
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px dotted #CBBF9F; font-family: 'IBM Plex Mono', monospace;">
+<span style="font-size: 14px; font-weight: {{rw.weight}}; color: {{rw.color}}">{{rw.text}}</span>
+<span style="font-size: 12px; font-weight: 600; color: {{rw.color}}">{{rw.dur}}</span>
+</div>
+</sc-for>
+</div>
+<div style="position: relative; height: 12px; background: #E3DAC2; margin-top: 2px">
+<sc-for list="{{dayLine.tl}}" as="g" hint-placeholder-count="2">
+<span style="position: absolute; top: 0; bottom: 0; left: {{g.l}}%; width: {{g.w}}%; background: #87C896; box-shadow: inset 0 0 0 1.5px #1F1C17"></span>
+</sc-for>
+</div>
+<div style="position: relative; height: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #4D473B">
+<sc-for list="{{dayLine.ticks}}" as="tk" hint-placeholder-count="5">
+<span style="position: absolute; top: 0; left: {{tk.l}}%; transform: translateX(-50%)">{{tk.label}}</span>
+</sc-for>
+</div>
 </sc-if>
-</span>
-<span style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
-<sc-for list="{{r.lines}}" as="ln" hint-placeholder-count="2">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; line-height: 1.3">{{ln.text}}</span>
-</sc-for>
-<sc-if value="{{r.hasNote}}" hint-placeholder-val="{{ false }}">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; opacity: 0.85">{{r.note}}</span>
-</sc-if>
-<span style="position: relative; display: block; height: 7px; margin-top: 2px; background: {{r.track}}">
-<sc-for list="{{r.tl}}" as="g" hint-placeholder-count="2">
-<span style="position: absolute; top: 0; bottom: 0; left: {{g.l}}%; width: {{g.w}}%; background: {{r.bar}}"></span>
-</sc-for>
-</span>
-</span>
-<span style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-family: 'IBM Plex Mono', monospace;">
-<span style="font-size: 15px; font-weight: 700">{{r.hours}}</span>
-<span style="font-size: 11px; font-weight: 700; color: {{r.saldoColor}}">{{r.saldo}}</span>
-</span>
-</button>
-</sc-for>
 </div>
 </sc-if>
 
@@ -268,50 +261,6 @@ NACHTRAGEN
 <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: #1F1C17">{{tool.hint}}</span>
 </div>
 
-<sc-if value="{{showDayLine}}" hint-placeholder-val="{{ true }}">
-<div style="border: 1.5px solid #1F1C17; background: #FBF8F0; display: flex; flex-direction: column">
-<button onClick="{{goDay}}" style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 12px 10px 14px; border-radius: 0; border: 0; background: transparent; color: #1F1C17; text-align: left">
-<span style="flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; padding: 0 4px; border: 1.5px solid #1F1C17">{{head.dow}}</span>
-<span style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 1px">
-<span style="font-size: 20px; font-weight: 700; line-height: 1.1">{{head.dm}}</span>
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4D473B">{{dayLine.kind}}</span>
-</span>
-<span style="display: flex; flex-direction: column; align-items: flex-end; gap: 1px; font-family: 'IBM Plex Mono', monospace;">
-<span style="font-size: 13px; font-weight: 600">{{sum.worked}} / {{sum.soll}}</span>
-<span style="font-size: 12px; font-weight: 700; color: {{sum.saldoColor}}">{{sum.saldo}}</span>
-</span>
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-</button>
-<sc-if value="{{dayLine.showBlocks}}" hint-placeholder-val="{{ true }}">
-<div style="border-top: 1px solid #CBBF9F; padding: 10px 14px 14px; display: flex; flex-direction: column; gap: 8px">
-<sc-if value="{{dayLine.hasRows}}" hint-placeholder-val="{{ true }}">
-<div style="display: flex; flex-direction: column">
-<sc-for list="{{dayLine.rows}}" as="rw" hint-placeholder-count="3">
-<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 5px 0; border-bottom: 1px dotted #CBBF9F; font-family: 'IBM Plex Mono', monospace;">
-<span style="font-size: 14px; font-weight: {{rw.weight}}; color: {{rw.color}}">{{rw.text}}</span>
-<span style="font-size: 12px; font-weight: 600; color: {{rw.color}}">{{rw.dur}}</span>
-</div>
-</sc-for>
-</div>
-<div style="position: relative; height: 16px; background: #E3DAC2; margin-top: 4px">
-<sc-for list="{{dayLine.tl}}" as="g" hint-placeholder-count="2">
-<span style="position: absolute; top: 0; bottom: 0; left: {{g.l}}%; width: {{g.w}}%; background: #1F1C17"></span>
-</sc-for>
-</div>
-<div style="position: relative; height: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #4D473B">
-<sc-for list="{{dayLine.ticks}}" as="tk" hint-placeholder-count="5">
-<span style="position: absolute; top: 0; left: {{tk.l}}%; transform: translateX(-50%)">{{tk.label}}</span>
-</sc-for>
-</div>
-</sc-if>
-<sc-if value="{{dayLine.noRows}}" hint-placeholder-val="{{ false }}">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #4D473B">{{dayLine.emptyText}}</span>
-</sc-if>
-</div>
-</sc-if>
-</div>
-</sc-if>
-
 <div style="border: 1.5px solid #1F1C17; background: #FBF8F0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr))">
 <div style="padding: 10px 12px; border-right: 1px solid #CBBF9F; display: flex; flex-direction: column; gap: 2px">
 <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.12em; color: #4D473B">IST</span>
@@ -327,7 +276,6 @@ NACHTRAGEN
 </div>
 </div>
 
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4D473B; line-height: 1.5">{{cal.legend}}</span>
 </div>
 </sc-if>
 
@@ -336,7 +284,7 @@ NACHTRAGEN
 <div style="padding: 16px 20px 40px; display: flex; flex-direction: column; gap: 16px">
 
 <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1.5px solid #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; color: #4D473B">
-<span>LOT</span>
+<span style="display: flex; align-items: center; gap: 7px"><span style="width: 9px; height: 9px; box-sizing: border-box; background: #87C896; border: 1.5px solid #1F1C17"></span>LOT</span>
 <span>KONTO</span>
 </div>
 
@@ -401,7 +349,7 @@ NACHTRAGEN
 <span style="height: 14px; box-sizing: border-box; border: 1.5px solid {{tk.bd}}; background: {{tk.bg}}"></span>
 </sc-for>
 </div>
-<button onClick="{{goStampVac}}" style="min-height: 48px; border-radius: 0; border: 1.5px solid #1F1C17; background: {{accent}}; color: #F4EEDF; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; box-shadow: 3px 3px 0 #1F1C17; display: flex; align-items: center; justify-content: center; gap: 8px">URLAUB IM KALENDER STEMPELN
+<button onClick="{{goStampVac}}" style="min-height: 48px; border-radius: 0; border: 1.5px solid #1F1C17; background: {{accent}}; color: #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; box-shadow: 3px 3px 0 #1F1C17; display: flex; align-items: center; justify-content: center; gap: 8px">URLAUB IM KALENDER STEMPELN
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
 </button>
 
@@ -442,7 +390,7 @@ NACHTRAGEN
 <input type="text" placeholder="z. B. Korrektur" value="{{adjNote}}" onChange="{{onAdjNote}}" style="width: 100%; box-sizing: border-box; min-height: 46px; border: 1.5px solid #1F1C17; border-radius: 0; padding: 0 10px; font-family: 'IBM Plex Sans Condensed', sans-serif; font-size: 16px; letter-spacing: 0; background: #F4EEDF; color: #1F1C17">
 </label>
 </div>
-<button onClick="{{addAdj}}" style="min-height: 48px; border-radius: 0; border: 1.5px solid #1F1C17; background: {{accent}}; color: #F4EEDF; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; box-shadow: 3px 3px 0 #1F1C17">BUCHEN</button>
+<button onClick="{{addAdj}}" style="min-height: 48px; border-radius: 0; border: 1.5px solid #1F1C17; background: {{accent}}; color: #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; box-shadow: 3px 3px 0 #1F1C17">BUCHEN</button>
 <div style="display: flex; flex-direction: column">
 <sc-for list="{{adjRows}}" as="a" hint-placeholder-count="2">
 <div style="display: flex; align-items: center; gap: 10px; padding: 4px 0; border-top: 1px solid #CBBF9F">
@@ -467,7 +415,7 @@ NACHTRAGEN
 <div style="padding: 16px 20px 40px; display: flex; flex-direction: column; gap: 22px">
 
 <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1.5px solid #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; color: #4D473B">
-<span>LOT</span>
+<span style="display: flex; align-items: center; gap: 7px"><span style="width: 9px; height: 9px; box-sizing: border-box; background: #87C896; border: 1.5px solid #1F1C17"></span>LOT</span>
 <span>OPTIONEN</span>
 </div>
 
@@ -597,7 +545,7 @@ NACHTRAGEN
 <button onClick="{{retryDb}}" style="flex: none; min-height: 44px; padding: 0 14px; border-radius: 0; border: 1.5px solid #1F1C17; background: #FBF8F0; color: #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.06em">NOCHMAL</button>
 </sc-if>
 </div>
-<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Alles liegt als JSON-Dateien im privaten Speicher dieser App auf deinem Gerät. Kein Konto, kein Cloud-Zwang.</span>
+<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Alles liegt verschlüsselt (AES-256) im privaten Speicher dieser App. Der Schlüssel steckt im Android-Schlüsselspeicher und verlässt das Gerät nie. Kein Konto, kein Internet.</span>
 <button onClick="{{resetTap}}" style="min-height: 48px; border-radius: 0; border: 1.5px solid #B03A2E; background: {{reset.bg}}; color: {{reset.fg}}; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.08em">{{reset.label}}</button>
 </div>
 
@@ -616,7 +564,7 @@ NACHTRAGEN
 <span style="font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 700; letter-spacing: 0.1em; color: {{nextColor}}">{{nextLabel}}</span>
 </span>
 </div>
-<button aria-label="Jetzt stempeln" onClick="{{stampNow}}" style="flex: none; align-self: flex-start; margin-top: -24px; width: 70px; height: 70px; border-radius: 35px; border: 2px solid #1F1C17; background: {{accent}}; color: #F4EEDF; display: flex; align-items: center; justify-content: center; padding: 0; box-shadow: 4px 4px 0 #1F1C17">
+<button aria-label="Jetzt stempeln" onClick="{{stampNow}}" style="flex: none; align-self: flex-start; margin-top: -24px; width: 70px; height: 70px; border-radius: 35px; border: 2px solid #1F1C17; background: {{accent}}; color: #1F1C17; display: flex; align-items: center; justify-content: center; padding: 0; box-shadow: 4px 4px 0 #1F1C17">
 <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v4.5a3 3 0 01-1.2 2.4V13h4.2a2 2 0 012 2v2H3v-2a2 2 0 012-2h4.2v-2.1A3 3 0 018 8.5z"/><path d="M4 21h16"/></svg>
 </button>
 </div>
@@ -674,7 +622,7 @@ WIRD ALS GEHEN EINGETRAGEN
 <sc-if value="{{sheetIsEdit}}" hint-placeholder-val="{{ false }}">
 <button onClick="{{delSheet}}" style="flex: 1 1 0; min-height: 52px; border-radius: 0; border: 1.5px solid #B03A2E; background: transparent; color: #B03A2E; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: 0.1em">LÖSCHEN</button>
 </sc-if>
-<button onClick="{{saveSheet}}" style="flex: 2 1 0; min-height: 52px; border-radius: 0; border: 1.5px solid #1F1C17; background: {{accent}}; color: #F4EEDF; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; box-shadow: 3px 3px 0 #1F1C17">SPEICHERN</button>
+<button onClick="{{saveSheet}}" style="flex: 2 1 0; min-height: 52px; border-radius: 0; border: 1.5px solid #1F1C17; background: {{accent}}; color: #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; box-shadow: 3px 3px 0 #1F1C17">SPEICHERN</button>
 </div>
 </div>
 </div>
@@ -693,12 +641,12 @@ WIRD ALS GEHEN EINGETRAGEN
 <div style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; z-index: 30; background: #F4EEDF; display: flex; flex-direction: column">
 <div style="flex: 1 1 0; min-height: 0; overflow-y: auto; padding: 16px 20px 24px; display: flex; flex-direction: column; gap: 18px">
 <div style="display: flex; justify-content: space-between; padding-bottom: 8px; border-bottom: 1.5px solid #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; color: #4D473B">
-<span>LOT</span>
+<span style="display: flex; align-items: center; gap: 7px"><span style="width: 9px; height: 9px; box-sizing: border-box; background: #87C896; border: 1.5px solid #1F1C17"></span>LOT</span>
 <span>EINRICHTUNG</span>
 </div>
 <div style="display: flex; flex-direction: column; gap: 6px">
 <h1 style="margin: 0; font-size: 38px; font-weight: 700; line-height: 1">NEUE KARTE</h1>
-<span style="font-size: 15px; color: #4D473B; line-height: 1.4">Ich brauche dein Land und Bundesland. Feiertage und Schulferien kannst du danach ein- oder ausschalten.</span>
+<span style="font-size: 15px; color: #4D473B; line-height: 1.4">Drei Schritte, dann geht's los. Alles lässt sich später in den Optionen ändern.</span>
 </div>
 
 <div style="display: flex; flex-direction: column; gap: 8px">
@@ -721,62 +669,76 @@ WIRD ALS GEHEN EINGETRAGEN
 </div>
 </sc-if>
 
-<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
-<div style="display: flex; flex-direction: column; gap: 1px; min-width: 0">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: #4D473B">{{setup.stepHol}} · FEIERTAGE</span>
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4D473B">{{setup.holSub}}</span>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: #4D473B">{{setup.stepHol}} · DEINE KARTE</span>
+<div style="border: 1.5px solid #1F1C17; background: #FBF8F0; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 64px; padding: 8px 14px; border-bottom: 1px solid #CBBF9F;">
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<span style="font-size: 16px; font-weight: 600; line-height: 1.2">Feiertage</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.04em; color: #4D473B">{{setup.holSub}}</span>
 </div>
-<button role="switch" aria-label="Feiertage ein oder aus" aria-checked="{{setup.hol}}" onClick="{{setup.toggleHol}}" style="flex: none; width: 56px; height: 44px; padding: 0; background: none; border: 0; display: flex; align-items: center">
+<div style="flex: none; width: 132px; display: flex; justify-content: flex-end">
+<button role="switch" aria-label="Feiertage ein oder aus" aria-checked="{{setup.hol}}" onClick="{{setup.toggleHol}}" style="width: 56px; height: 44px; padding: 0; background: none; border: 0; display: flex; align-items: center">
 <span style="display: flex; align-items: center; width: 56px; height: 30px; box-sizing: border-box; border: 1.5px solid #1F1C17; background: {{setup.holBg}}">
 <span style="width: 22px; height: 22px; background: {{setup.holKnob}}; margin-left: {{setup.holLeft}}px; transition: margin-left 0.12s"></span>
 </span>
 </button>
 </div>
-
-<sc-if value="{{setup.hasFerien}}" hint-placeholder-val="{{ true }}">
-<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
-<div style="display: flex; flex-direction: column; gap: 1px; min-width: 0">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: #4D473B">{{setup.stepFer}} · SCHULFERIEN</span>
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4D473B">{{setup.ferSub}}</span>
 </div>
-<button role="switch" aria-label="Schulferien ein oder aus" aria-checked="{{setup.ferien}}" onClick="{{setup.toggleFerien}}" style="flex: none; width: 56px; height: 44px; padding: 0; background: none; border: 0; display: flex; align-items: center">
+<sc-if value="{{setup.hasFerien}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 64px; padding: 8px 14px; border-bottom: 1px solid #CBBF9F;">
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<span style="font-size: 16px; font-weight: 600; line-height: 1.2">Schulferien</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.04em; color: #4D473B">{{setup.ferSub}}</span>
+</div>
+<div style="flex: none; width: 132px; display: flex; justify-content: flex-end">
+<button role="switch" aria-label="Schulferien ein oder aus" aria-checked="{{setup.ferien}}" onClick="{{setup.toggleFerien}}" style="width: 56px; height: 44px; padding: 0; background: none; border: 0; display: flex; align-items: center">
 <span style="display: flex; align-items: center; width: 56px; height: 30px; box-sizing: border-box; border: 1.5px solid #1F1C17; background: {{setup.ferBg}}">
 <span style="width: 22px; height: 22px; background: {{setup.ferKnob}}; margin-left: {{setup.ferLeft}}px; transition: margin-left 0.12s"></span>
 </span>
 </button>
 </div>
+</div>
 </sc-if>
-
-<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
-<div style="display: flex; flex-direction: column; gap: 1px">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: #4D473B">{{setup.stepHours}} · WOCHENSTUNDEN</span>
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4D473B">{{set.tagessoll}}</span>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 64px; padding: 8px 14px; border-bottom: 1px solid #CBBF9F;">
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<span style="font-size: 16px; font-weight: 600; line-height: 1.2">Wochenstunden</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.04em; color: #4D473B">{{set.tagessoll}}</span>
 </div>
-<div style="display: flex; align-items: center">
-<button aria-label="Wochenstunden verringern" onClick="{{hrsMinus}}" style="width: 44px; height: 44px; border: 1.5px solid #1F1C17; border-radius: 0; background: #FBF8F0; color: #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 20px; padding: 0">−</button>
-<span style="min-width: 70px; height: 44px; box-sizing: border-box; border-top: 1.5px solid #1F1C17; border-bottom: 1.5px solid #1F1C17; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 16px; font-weight: 700">{{set.weekHours}}</span>
-<button aria-label="Wochenstunden erhöhen" onClick="{{hrsPlus}}" style="width: 44px; height: 44px; border: 1.5px solid #1F1C17; border-radius: 0; background: #FBF8F0; color: #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 20px; padding: 0">+</button>
-</div>
-</div>
-
-<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: #4D473B">{{setup.stepVac}} · URLAUBSTAGE PRO JAHR</span>
-<div style="display: flex; align-items: center">
-<button aria-label="Urlaubsanspruch verringern" onClick="{{vacMinus}}" style="width: 44px; height: 44px; border: 1.5px solid #1F1C17; border-radius: 0; background: #FBF8F0; color: #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 20px; padding: 0">−</button>
-<span style="min-width: 52px; height: 44px; box-sizing: border-box; border-top: 1.5px solid #1F1C17; border-bottom: 1.5px solid #1F1C17; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 16px; font-weight: 700">{{set.vacDays}}</span>
-<button aria-label="Urlaubsanspruch erhöhen" onClick="{{vacPlus}}" style="width: 44px; height: 44px; border: 1.5px solid #1F1C17; border-radius: 0; background: #FBF8F0; color: #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 20px; padding: 0">+</button>
+<div style="flex: none; width: 132px; display: flex; justify-content: flex-end">
+<div style="display: flex; align-items: center; width: 132px">
+<button aria-label="Wochenstunden verringern" onClick="{{hrsMinus}}" style="width: 40px; height: 40px; border: 1.5px solid #1F1C17; border-radius: 0; background: #F4EEDF; color: #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 18px; padding: 0">−</button>
+<span style="flex: 1 1 0; height: 40px; box-sizing: border-box; border-top: 1.5px solid #1F1C17; border-bottom: 1.5px solid #1F1C17; background: #FBF8F0; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 700">{{set.weekHours}}</span>
+<button aria-label="Wochenstunden erhöhen" onClick="{{hrsPlus}}" style="width: 40px; height: 40px; border: 1.5px solid #1F1C17; border-radius: 0; background: #F4EEDF; color: #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 18px; padding: 0">+</button>
 </div>
 </div>
-
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 64px; padding: 8px 14px; border-bottom: 1px solid #CBBF9F;">
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<span style="font-size: 16px; font-weight: 600; line-height: 1.2">Urlaubstage</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.04em; color: #4D473B">PRO JAHR</span>
+</div>
+<div style="flex: none; width: 132px; display: flex; justify-content: flex-end">
+<div style="display: flex; align-items: center; width: 132px">
+<button aria-label="Urlaubsanspruch verringern" onClick="{{vacMinus}}" style="width: 40px; height: 40px; border: 1.5px solid #1F1C17; border-radius: 0; background: #F4EEDF; color: #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 18px; padding: 0">−</button>
+<span style="flex: 1 1 0; height: 40px; box-sizing: border-box; border-top: 1.5px solid #1F1C17; border-bottom: 1.5px solid #1F1C17; background: #FBF8F0; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 700">{{set.vacDays}}</span>
+<button aria-label="Urlaubsanspruch erhöhen" onClick="{{vacPlus}}" style="width: 40px; height: 40px; border: 1.5px solid #1F1C17; border-radius: 0; background: #F4EEDF; color: #1F1C17; font-family: 'IBM Plex Mono', monospace; font-size: 18px; padding: 0">+</button>
+</div>
+</div>
+</div>
 <sc-if value="{{setup.hasBal}}" hint-placeholder-val="{{ true }}">
-<label style="display: flex; flex-direction: column; gap: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: #4D473B"><span>{{setup.stepBal}} · STUNDENSALDO HEUTE (STD., OPTIONAL)</span>
-<input type="text" inputmode="decimal" placeholder="z. B. 12,5 oder -3" value="{{setup.balVal}}" onChange="{{setup.onBal}}" style="width: 100%; box-sizing: border-box; min-height: 46px; border: 1.5px solid #1F1C17; border-radius: 0; padding: 0 10px; font-family: 'IBM Plex Mono', monospace; font-size: 15px; letter-spacing: 0; background: #FBF8F0; color: #1F1C17">
-</label>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 64px; padding: 8px 14px;">
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<span style="font-size: 16px; font-weight: 600; line-height: 1.2">Stundensaldo heute</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.04em; color: #4D473B">OPTIONAL · Z. B. 12:30</span>
+</div>
+<div style="flex: none; width: 132px; display: flex; justify-content: flex-end">
+<input type="text" inputmode="decimal" aria-label="Stundensaldo heute" placeholder="0:00" value="{{setup.balVal}}" onChange="{{setup.onBal}}" style="width: 132px; height: 40px; box-sizing: border-box; border: 1.5px solid #1F1C17; border-radius: 0; padding: 0 10px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: 0; background: #FBF8F0; color: #1F1C17">
+</div>
+</div>
 </sc-if>
-
-<div style="border: 1.5px dashed #A99C7C; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px">
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em">{{setup.preview}}</span>
-<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Feiertage rechnet die App offline nach Landesrecht. Schulferien sind amtliche Daten (OpenHolidays API) und fest in der App.</span>
+</div>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4D473B; line-height: 1.5">{{setup.preview}}</span>
 </div>
 </div>
 <div style="flex: none; padding: 14px 20px 24px; border-top: 1.5px solid #1F1C17">
@@ -917,7 +879,6 @@ class Component extends DCLogic {
       setupBal: '',
       resetStep: 0,
       stampTool: null,
-      calView: 'month',
       setupHol: true,
       setupFerien: false,
       rangeMode: false,
@@ -959,16 +920,28 @@ class Component extends DCLogic {
   // ---------- Speicher: JSON-Dateien auf dem Gerät, nichts im Browser-Speicher ----------
   quiet(patch) { this._quiet = true; this.setState(patch); this._quiet = false; }
 
-  // JSON-Dateien im privaten App-Ordner (Directory.Data): cfg, adj, m_JJJJ-MM.
+  // Verschlüsselte Dateien im privaten App-Ordner (Directory.Data): cfg, adj, m_JJJJ-MM.
+  // Inhalt: AES-256-GCM, Schlüssel im Android Keystore (Plugin LotCrypto), Format "LOT1:…".
   // Jede Datei gibt es doppelt (.json + .bak). Geschrieben wird erst .bak, dann .json, jeweils
-  // mit Gegenlesen. Stürzt die App mitten im Schreiben ab, bleibt immer eine heile Kopie übrig.
-  fileStore(FS) {
+  // mit Gegenlesen und Entschlüsseln. Alte unverschlüsselte Dateien werden gelesen und sofort neu verschlüsselt.
+  fileStore(FS, C) {
     const D = 'DATA', P = 'lot';
-    const rd = async (n) => { try { const r = await FS.readFile({ path: P + '/' + n, directory: D, encoding: 'utf8' }); const o = JSON.parse(r.data); return (o && typeof o === 'object') ? o : null; } catch (e) { return null; } };
-    const wr = async (n, text) => {
-      await FS.writeFile({ path: P + '/' + n, directory: D, data: text, encoding: 'utf8', recursive: true });
-      const back = await FS.readFile({ path: P + '/' + n, directory: D, encoding: 'utf8' });
-      if (back.data !== text) throw new Error('verify');
+    const raw = async (n) => { try { const r = await FS.readFile({ path: P + '/' + n, directory: D, encoding: 'utf8' }); return typeof r.data === 'string' ? r.data : null; } catch (e) { return null; } };
+    const open = async (text) => {
+      if (text == null) return { obj: null };
+      try {
+        if (text.indexOf('LOT1:') === 0) { const d = await C.decrypt({ data: text }); const o = JSON.parse(d.data); return { obj: o && typeof o === 'object' ? o : null }; }
+        const t = text.trim();
+        if (t[0] === '{') { const o = JSON.parse(t); return { obj: o && typeof o === 'object' ? o : null, plain: true }; }
+      } catch (e) { /* unlesbar */ }
+      return { obj: null, bad: true };
+    };
+    const wr = async (n, cipher, json) => {
+      await FS.writeFile({ path: P + '/' + n, directory: D, data: cipher, encoding: 'utf8', recursive: true });
+      const back = await raw(n);
+      if (back !== cipher) throw new Error('verify');
+      const d = await C.decrypt({ data: back });
+      if (d.data !== json) throw new Error('verify');
     };
     return {
       async get() {
@@ -976,22 +949,25 @@ class Component extends DCLogic {
         const l = await FS.readdir({ path: P, directory: D });
         const ids = new Set();
         (l.files || []).forEach((f) => { const n = typeof f === 'string' ? f : f.name; const m = /^(.+)\.(json|bak)$/.exec(n); if (m) ids.add(m[1]); });
-        const docs = [];
-        let repaired = 0;
+        const docs = [], plain = [];
+        let repaired = 0, broken = 0;
         for (const id of ids) {
-          const a = await rd(id + '.json'), b = await rd(id + '.bak');
-          let obj = a;
-          if (!a || (b && (b.ts || 0) > (a.ts || 0))) { obj = b; if (obj) repaired++; }
-          if (obj) docs.push({ id: id, data: () => obj });
+          const a = await open(await raw(id + '.json')), b = await open(await raw(id + '.bak'));
+          let pick = a;
+          if (!a.obj || (b.obj && (b.obj.ts || 0) > (a.obj.ts || 0))) { pick = b; if (b.obj && a.bad) repaired++; }
+          if (pick.obj) { const o = pick.obj; docs.push({ id: id, data: () => o }); if (a.plain || b.plain) plain.push(id); }
+          else if (a.bad || b.bad) broken++;
         }
-        return { docs: docs, repaired: repaired };
+        return { docs: docs, repaired: repaired, broken: broken, plain: plain };
       },
       doc(id) {
         return {
           async set(v) {
-            const text = JSON.stringify(Object.assign({}, v, { ts: Date.now() }));
-            await wr(id + '.bak', text);
-            await wr(id + '.json', text);
+            const json = JSON.stringify(Object.assign({}, v, { ts: Date.now() }));
+            const cipher = (await C.encrypt({ data: json })).data;
+            if (typeof cipher !== 'string' || cipher.indexOf('LOT1:') !== 0) throw new Error('crypto');
+            await wr(id + '.bak', cipher, json);
+            await wr(id + '.json', cipher, json);
           },
           async delete() {
             try { await FS.deleteFile({ path: P + '/' + id + '.json', directory: D }); } catch (e) { /* schon weg */ }
@@ -1007,7 +983,8 @@ class Component extends DCLogic {
     try {
       const P = window.Capacitor && window.Capacitor.Plugins;
       if (!P || !P.Filesystem) diag = 'Dateispeicher fehlt';
-      else col = this.fileStore(P.Filesystem);
+      else if (!P.LotCrypto) diag = 'Verschlüsselung fehlt, es wird nichts gespeichert';
+      else col = this.fileStore(P.Filesystem, P.LotCrypto);
     } catch (e) { col = null; diag = 'Fehler: ' + (e && (e.code || e.message) ? (e.code || e.message) : String(e)); }
     if (!col) { this.col = null; this.quiet({ loaded: true, sync: 'off', saveErr: diag, setup: !this.state.settings.country }); return; }
     try {
@@ -1046,7 +1023,7 @@ class Component extends DCLogic {
       this.col = col;
       this.dirty = new Set();
       this.quiet({
-        loaded: true, sync: 'ok', saveErr: '', repaired: snap.repaired || 0,
+        loaded: true, sync: 'ok', saveErr: '', repaired: snap.repaired || 0, broken: snap.broken || 0,
         stamps: stamps, types: types, adjust: list,
         nextId: Math.max(adj && typeof adj.nextId === 'number' ? adj.nextId : 1, list.reduce((m, x) => Math.max(m, x.id || 0), 0) + 1),
         balInput: cfg && typeof cfg.balInput === 'string' ? cfg.balInput : '',
@@ -1054,6 +1031,7 @@ class Component extends DCLogic {
         setup: !settings.country, setupFirst: !settings.country,
         setupCountry: settings.country || 'DE', setupRegion: settings.region, setupHol: settings.useHol, setupFerien: settings.useFerien
       });
+      if (snap.plain && snap.plain.length) { snap.plain.forEach((id) => { if (/^(cfg|adj|m_\d{4}-\d\d)$/.test(id)) this.dirty.add(id); }); this.quiet({ sync: 'pending' }); this.flush(); }
     } catch (e) {
       this.col = null;
       this.quiet({ loaded: true, sync: 'off', saveErr: 'Lesen: ' + (e && (e.code || e.message) ? (e.code || e.message) : String(e)), setup: !this.state.settings.country });
@@ -1378,7 +1356,8 @@ class Component extends DCLogic {
   renderVals() {
     const S = this.state;
     const st = S.settings;
-    const accent = this.props.accent ?? '#2B3A67';
+    const accent = this.props.accent ?? '#87C896'; // Grün aus dem App-Icon
+    const GREEN_D = '#2E6A3E';
     const GREEN = '#2E6A3E', RED = '#B03A2E', INK = '#1F1C17', INK2 = '#4D473B', MUTED = '#6B6352', PAPER = '#F4EEDF', PANEL = '#FBF8F0', RULE = '#CBBF9F';
     const TC = { urlaub: ['U', '#2C5A8C'], schule: ['BS', '#6B3F8C'], krank: ['K', RED], feiertag: ['FT', INK], ausgleich: ['AG', MUTED], arbeit: ['AR', GREEN] };
     const nd = new Date(S.now);
@@ -1400,7 +1379,7 @@ class Component extends DCLogic {
       dm: this.pad(d.getDate()) + ' ' + this.MON[d.getMonth()],
       year: String(d.getFullYear()),
       kw: this.pad(this.isoWeek(d)),
-      sub: this.DOWL[sel.wd].toUpperCase() + extra,
+      sub: this.DOWL[sel.wd].toUpperCase() + ' · KW ' + this.pad(this.isoWeek(d)) + extra,
       full: this.DOW[sel.wd] + ' ' + this.pad(d.getDate()) + ' ' + this.MON[d.getMonth()] + ' ' + d.getFullYear(),
       notToday: S.date !== todayIso
     };
@@ -1423,7 +1402,7 @@ class Component extends DCLogic {
     const hrs = sel.soll > 0 ? Math.max(1, Math.round(sel.soll / 60)) : 0;
     const step = hrs > 0 ? (100 / hrs).toFixed(3) : '0';
     const rulerBg = hrs > 1 ? 'repeating-linear-gradient(90deg, transparent 0, transparent calc(' + step + '% - 1px), ' + RULE + ' calc(' + step + '% - 1px), ' + RULE + ' ' + step + '%)' : 'transparent';
-    const fillColor = (sel.soll > 0 && sel.saldo >= 0) ? GREEN : accent;
+    const fillColor = accent;
     const sum = {
       worked: this.fmt(sel.worked),
       soll: this.fmt(sel.soll),
@@ -1437,7 +1416,7 @@ class Component extends DCLogic {
       eta: hasEta ? 'FEIERABEND ~' + this.hhmm(nowMin + toGo) : '',
       pct: pct,
       rulerBg: rulerBg,
-      fillBg: 'repeating-linear-gradient(135deg, ' + fillColor + ' 0, ' + fillColor + ' 3px, transparent 3px, transparent 6px)'
+      fillBg: fillColor
     };
 
     // ---- Stempelungen ----
@@ -1520,12 +1499,13 @@ class Component extends DCLogic {
       let bg = PANEL, fg = INK, ring = 'none', track = '#E3DAC2', bar = INK;
       if (di.ferien && !code) bg = FER_BG;
       if (!st.workdays[di.wd] && !code && di.worked === 0) { bg = PAPER; fg = MUTED; }
-      if (s2 === todayIso) ring = 'inset 0 0 0 2px ' + accent;
+
       if (selected) { bg = INK; fg = PAPER; codeColor = PAPER; hoursColor = hours === 'FEHLT' ? '#E8A59B' : PAPER; ring = 'none'; track = '#4D473B'; bar = PAPER; }
       if (S.anchor === s2) { bg = 'repeating-linear-gradient(135deg, #E3DAC2 0, #E3DAC2 4px, ' + PANEL + ' 4px, ' + PANEL + ' 8px)'; ring = 'inset 0 0 0 2px ' + INK; fg = INK; bar = INK; track = '#E3DAC2'; }
-      return { code: code, codeColor: codeColor, hours: hours, hoursColor: hoursColor, bg: bg, fg: fg, ring: ring, track: track, bar: bar };
+      const isToday = s2 === todayIso;
+      return { code: code, codeColor: codeColor, hours: hours, hoursColor: hoursColor, bg: bg, fg: fg, ring: ring, track: track, bar: bar, numBg: isToday ? accent : 'transparent', numFg: isToday ? INK : 'inherit' };
     };
-    const isWeek = S.calView === 'week';
+    const isWeek = false; // nur Monatsansicht
     const tapDay = (s2) => () => { if (this.state.stampTool) this.applyTool(s2); else this.setState({ date: s2 }); };
     const cells = [];
     let mIst = 0, mSoll = 0;
@@ -1548,7 +1528,7 @@ class Component extends DCLogic {
         else if (di.times.length === 1) tOut = di.open ? 'läuft' : '?';
         cells.push({
           inMonth: true, outMonth: false,
-          num: String(dd.getDate()), bg: lk.bg, fg: lk.fg, ring: lk.ring, track: lk.track, bar: lk.bar,
+          num: String(dd.getDate()), numBg: lk.numBg, numFg: lk.numFg, bg: lk.bg, fg: lk.fg, ring: lk.ring, track: lk.track, bar: lk.bar,
           code: lk.code, codeColor: lk.codeColor, hasCode: !!lk.code,
           tf: this.stickerTf(s2), ink: (0.78 + (h % 22) / 100).toFixed(2),
           hours: lk.hours, hoursColor: lk.hoursColor, hasHours: !!lk.hours,
@@ -1559,36 +1539,9 @@ class Component extends DCLogic {
         });
       }
     }
-    // Wochenansicht: jede Stempelung des Tages, komplett ausgeschrieben
     const weekRows = [];
     const wMon = this.mondayOf(S.date);
-    let wIstC = 0, wSollC = 0;
-    if (isWeek) {
-      for (let i = 0; i < 7; i++) {
-        const s2 = this.addDays(wMon, i);
-        const di = this.dayInfo(s2, S);
-        const lk = dayLook(s2, di, !S.stampTool && s2 === S.date);
-        if (s2 >= st.kontoStart && s2 <= todayIso && !(s2 === todayIso && di.times.length === 0)) { wIstC += di.worked; wSollC += di.soll; }
-        const lines = lineTexts(di);
-        const kind = kindOf(di);
-        let note = '';
-        if (di.times.length === 0) { if (kind !== 'ARBEITSTAG') note = kind; else if (lk.hours === 'FEHLT') note = 'FEHLT'; }
-        else if (di.type !== 'arbeit' || di.ferien) note = kind;
-        if (di.times.length === 0 && !note) note = s2 === todayIso ? 'NOCH NICHTS GESTEMPELT' : '–';
-        if (di.autoCut > 0) note = (note ? note + ' · ' : '') + 'PAUSE AUTOM. −' + this.fmt(di.autoCut);
-        const h = this.hash(s2);
-        weekRows.push({
-          dow: this.DOW[di.wd], num: String(di.d.getDate()), bg: lk.bg, fg: lk.fg, ring: lk.ring, track: lk.track, bar: lk.bar,
-          code: lk.code, codeColor: lk.codeColor, hasCode: !!lk.code, tf: this.stickerTf(s2), ink: (0.78 + (h % 22) / 100).toFixed(2),
-          lines: lines, note: note, hasNote: !!note, tl: tlOf(di),
-          hours: di.worked > 0 ? this.fmt(di.worked) : (di.soll > 0 && lk.hours === 'FEHLT' ? 'FEHLT' : '–'),
-          saldo: (di.worked > 0 || di.soll > 0) && s2 >= st.kontoStart && s2 <= todayIso && !(s2 === todayIso && di.times.length === 0) ? this.sfmt(di.saldo) : '',
-          saldoColor: selColor(di.saldo, s2 === S.date && !S.stampTool),
-          aria: this.DOWL[di.wd] + ', ' + di.d.getDate() + '. ' + this.MONL[di.d.getMonth()] + (di.times.length ? ', ' + di.times.join(' ') : ''),
-          tap: tapDay(s2)
-        });
-      }
-    }
+    const wIstC = 0, wSollC = 0;
     const wEnd = this.parse(this.addDays(wMon, 6)), wStart = this.parse(wMon);
     const ist = isWeek ? wIstC : mIst, soll = isWeek ? wSollC : mSoll;
     const cal = {
@@ -1642,7 +1595,7 @@ class Component extends DCLogic {
     if (rowsD.length > 1) rowsD.push({ text: 'Arbeitszeit', dur: this.fmt(sel.worked), weight: 700, color: INK });
     const tickD = [6, 9, 12, 15, 18, 21].map((hh) => ({ l: ((hh * 60 - TR0) / TRS * 100).toFixed(2), label: String(hh) }));
     const dayLine = {
-      kind: dayKind + ' · STEMPELUNGEN ÖFFNEN',
+      kind: dayKind + (rowsD.length ? '' : (sel.type === 'arbeit' && !sel.ferien && st.workdays[sel.wd] ? ' · KEINE STEMPELUNG' : '')),
       showBlocks: !isWeek,
       rows: rowsD, hasRows: rowsD.length > 0, noRows: rowsD.length === 0,
       tl: tlOf(sel), ticks: tickD,
@@ -1743,14 +1696,14 @@ class Component extends DCLogic {
       vacDays: st.vacDays,
       autoBreak: st.autoBreak,
       autoBg: st.autoBreak ? accent : PANEL,
-      knobBg: st.autoBreak ? PAPER : INK,
+      knobBg: st.autoBreak ? INK : INK,
       knobLeft: st.autoBreak ? 28 : 3,
       kontoStart: st.kontoStart,
       balInput: S.balInput,
       regionLabel: regionLabel,
       holCount: (st.useHol === false ? 'FEIERTAGE AUS' : year + ': ' + holThisYear + ' FEIERTAGE AN WERKTAGEN') + (st.useFerien && st.country === 'DE' ? ' · FERIEN AN' : ''),
-      useHol: st.useHol !== false, holBg: st.useHol !== false ? accent : PANEL, holKnob: st.useHol !== false ? PAPER : INK, holLeft: st.useHol !== false ? 28 : 3,
-      useFerien: !!st.useFerien, ferBg: st.useFerien ? accent : PANEL, ferKnob: st.useFerien ? PAPER : INK, ferLeft: st.useFerien ? 28 : 3,
+      useHol: st.useHol !== false, holBg: st.useHol !== false ? accent : PANEL, holKnob: st.useHol !== false ? INK : INK, holLeft: st.useHol !== false ? 28 : 3,
+      useFerien: !!st.useFerien, ferBg: st.useFerien ? accent : PANEL, ferKnob: st.useFerien ? INK : INK, ferLeft: st.useFerien ? 28 : 3,
       hasFerien: st.country === 'DE'
     };
     const thisMon = this.mondayOf(todayIso);
@@ -1789,24 +1742,20 @@ class Component extends DCLogic {
         return { label: r[1], on: on, bg: on ? INK : PANEL, fg: on ? PAPER : INK, tap: () => this.setState({ setupRegion: r[0] }) };
       }),
       stepHol: sc === 'DE' ? '03' : '02',
-      stepFer: '04',
-      stepHours: sc === 'DE' ? '05' : '03',
-      stepVac: sc === 'DE' ? '06' : '04',
-      stepBal: sc === 'DE' ? '07' : '05',
-      holSub: S.setupHol ? 'WERDEN AUTOMATISCH EINGETRAGEN' : 'AUS · KEINE FEIERTAGE',
-      ferSub: S.setupFerien ? 'IM KALENDER SICHTBAR' : 'AUS · NICHT ANZEIGEN',
-      hol: S.setupHol, holBg: S.setupHol ? accent : PANEL, holKnob: S.setupHol ? PAPER : INK, holLeft: S.setupHol ? 28 : 3,
-      ferien: S.setupFerien && sc === 'DE', ferBg: S.setupFerien ? accent : PANEL, ferKnob: S.setupFerien ? PAPER : INK, ferLeft: S.setupFerien ? 28 : 3,
+      holSub: S.setupHol ? 'AN · NACH LANDESRECHT' : 'AUS',
+      ferSub: S.setupFerien ? 'AN · AMTLICHE DATEN' : 'AUS',
+      hol: S.setupHol, holBg: S.setupHol ? accent : PANEL, holKnob: S.setupHol ? INK : INK, holLeft: S.setupHol ? 28 : 3,
+      ferien: S.setupFerien && sc === 'DE', ferBg: S.setupFerien ? accent : PANEL, ferKnob: S.setupFerien ? INK : INK, ferLeft: S.setupFerien ? 28 : 3,
       hasFerien: sc === 'DE',
       toggleHol: () => this.setState({ setupHol: !this.state.setupHol }),
       toggleFerien: () => this.setState({ setupFerien: !this.state.setupFerien }),
       hasBal: S.setupFirst,
       balVal: S.setupBal,
       onBal: (e) => this.setState({ setupBal: e.target.value }),
-      preview: ready && !S.setupHol ? 'FEIERTAGE AUSGESCHALTET' : ready ? year + ': ' + prevKeys.length + ' GESETZLICHE FEIERTAGE FÜR ' + this.REGL[sc === 'AT' ? 'AT' : sr].toUpperCase() : 'NOCH KEIN BUNDESLAND GEWÄHLT',
+      preview: !ready ? 'NOCH KEIN BUNDESLAND GEWÄHLT.' : (S.setupHol ? year + ': ' + prevKeys.length + ' FEIERTAGE FÜR ' + this.REGL[sc === 'AT' ? 'AT' : sr].toUpperCase() + '. ' : '') + 'ALLES LÄUFT OFFLINE UND BLEIBT AUF DEINEM GERÄT.',
       blocked: !ready,
       btnBg: ready ? accent : PANEL,
-      btnFg: ready ? PAPER : MUTED,
+      btnFg: ready ? INK : MUTED,
       btnShadow: ready ? '3px 3px 0 ' + INK : 'none',
       btnLabel: ready ? 'KARTE ANLEGEN' : 'BUNDESLAND WÄHLEN',
       done: () => {
@@ -1825,20 +1774,20 @@ class Component extends DCLogic {
     };
 
     const sy = {
-      ok: ['GESPEICHERT', GREEN, 'AUF DEM GERÄT GESPEICHERT' + (S.lastSave ? ' · ' + this.hhmm(new Date(S.lastSave).getHours() * 60 + new Date(S.lastSave).getMinutes()) : '') + ' · DOPPELT ABGESICHERT' + (S.repaired ? ' · ' + S.repaired + ' DATEI(EN) REPARIERT' : '')],
+      ok: ['GESPEICHERT', GREEN, 'AUF DEM GERÄT GESPEICHERT' + (S.lastSave ? ' · ' + this.hhmm(new Date(S.lastSave).getHours() * 60 + new Date(S.lastSave).getMinutes()) : '') + ' · VERSCHLÜSSELT · DOPPELT ABGESICHERT' + (S.repaired ? ' · ' + S.repaired + ' DATEI(EN) REPARIERT' : '') + (S.broken ? ' · ' + S.broken + ' DATEI(EN) NICHT LESBAR' : '')],
       pending: ['SPEICHERT …', INK2, 'WIRD GESPEICHERT …'],
       error: ['FEHLER', RED, 'SPEICHERN FEHLGESCHLAGEN' + (S.saveErr ? ' (' + S.saveErr + ')' : '') + ' · NEUER VERSUCH LÄUFT'],
       off: ['NICHT GESPEICHERT', RED, 'SPEICHER NICHT ERREICHBAR' + (S.saveErr ? ' (' + S.saveErr + ')' : '') + ' · ÄNDERUNGEN GEHEN BEIM SCHLIESSEN VERLOREN'],
       loading: ['', INK2, '']
     }[S.sync] || ['', INK2, ''];
-    const syncUi = { text: sy[0], color: sy[1], long: sy[2], canRetry: S.sync === 'off' };
+    const syncUi = { text: sy[0], color: sy[1], long: sy[2], canRetry: S.sync === 'off', alert: S.sync === 'error' || (S.sync === 'off' && !!window.Capacitor) };
     const reset = S.resetStep === 1
       ? { label: 'WIRKLICH? ALLES LÖSCHEN · NOCHMAL TIPPEN', bg: RED, fg: PAPER }
       : { label: 'KARTE ZURÜCKSETZEN', bg: 'transparent', fg: RED };
 
     const tabs = { day: S.tab === 'day', cal: S.tab === 'cal', konto: S.tab === 'konto', set: S.tab === 'set' };
     const tb = {}, tf = {};
-    Object.keys(tabs).forEach((key) => { tb[key] = tabs[key] ? INK : 'transparent'; tf[key] = tabs[key] ? PAPER : INK2; });
+    Object.keys(tabs).forEach((key) => { tb[key] = tabs[key] ? INK : 'transparent'; tf[key] = tabs[key] ? accent : INK2; });
 
     return {
       accent: accent,
@@ -1915,16 +1864,12 @@ class Component extends DCLogic {
       regionShort: regionShort,
       prevMonth: () => {
         const c = this.state;
-        if (c.calView === 'week') { const d2 = this.addDays(c.date, -7); const p = this.parse(d2); this.setState({ date: d2, calY: p.getFullYear(), calM: p.getMonth(), anchor: null }); return; }
         const m = c.calM - 1; this.setState(m < 0 ? { calM: 11, calY: c.calY - 1 } : { calM: m });
       },
       nextMonth: () => {
         const c = this.state;
-        if (c.calView === 'week') { const d2 = this.addDays(c.date, 7); const p = this.parse(d2); this.setState({ date: d2, calY: p.getFullYear(), calM: p.getMonth(), anchor: null }); return; }
         const m = c.calM + 1; this.setState(m > 11 ? { calM: 0, calY: c.calY + 1 } : { calM: m });
       },
-      setMonthView: () => { const p = this.parse(this.state.date); this.setState({ calView: 'month', calY: p.getFullYear(), calM: p.getMonth(), anchor: null }); },
-      setWeekView: () => this.setState({ calView: 'week', anchor: null }),
 
       vac: vac,
       vacRanges: vacRanges,

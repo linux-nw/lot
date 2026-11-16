@@ -42,4 +42,8 @@ if 'tools:node="remove"' not in s:
     s = s.replace('<uses-permission android:name="android.permission.INTERNET" />', '<uses-permission android:name="android.permission.INTERNET" tools:node="remove" />\n    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove" />')
     open(m, 'w').write(s)
     open(RES + '/xml/data_extraction_rules.xml', 'w').write('<?xml version="1.0" encoding="utf-8"?>\n<data-extraction-rules>\n    <cloud-backup>\n        <exclude domain="root" /><exclude domain="file" /><exclude domain="database" /><exclude domain="sharedpref" /><exclude domain="external" />\n    </cloud-backup>\n</data-extraction-rules>\n')
+# Verschlüsselung: eigenes Plugin (Android Keystore) und MainActivity, die es registriert
+import shutil
+JAVA = RES + '/../java/de/lot/app'
+for f in ('LotCryptoPlugin.java', 'MainActivity.java'): shutil.copy('tools/android/' + f, JAVA + '/' + f)
 print('Android-Projekt angepasst')

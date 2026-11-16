@@ -11,7 +11,7 @@ Stempeluhr für Android. Ein Button, kein Kommen/Gehen-Gewähle: Die Reihenfolge
 - Nachtragen und Ändern: alles wird neu berechnet
 - Gesetzliche Pause (ab 6 Std. 30 Min., ab 9 Std. 45 Min.) optional automatisch abziehen
 - Kalender mit Stempelkasten: Urlaub, Berufsschule, Krank, Ausgleich, Arbeit
-- Monatsansicht mit Zeitbalken pro Tag, Wochenansicht mit allen Stempelzeiten, Tageskarte mit Blöcken und Pausen
+- Quadratische Monatsansicht mit Zeitbalken pro Tag, darunter alle Stempelzeiten des gewählten Tages mit Blöcken und Pausen
 - Berufsschultage pro Wochentag: jede Woche, gerade oder ungerade Kalenderwochen und frei wählbare Arbeitstage
 - Feiertage für alle 16 deutschen Bundesländer und Österreich, offline berechnet, optional
 - Schulferien (amtliche Daten der OpenHolidays API, 2025 bis 2029, fest eingebaut), optional; Berufsschule entfällt in den Ferien. Neu holen: `python3 tools/fetch-ferien.py 2025 2029`
@@ -20,7 +20,7 @@ Stempeluhr für Android. Ein Button, kein Kommen/Gehen-Gewähle: Die Reihenfolge
 
 ## Daten
 
-Alle Daten liegen als JSON-Dateien im privaten App-Speicher (`lot/cfg.json`, `lot/adj.json`, `lot/m_JJJJ-MM.json`). Jede Datei wird doppelt geschrieben (`.json` und `.bak`, mit Gegenlesen); bei einer beschädigten Datei greift die Kopie. Die App hat keine Internet-Berechtigung, das Cloud-Backup von Android ist abgeschaltet und eine Content-Security-Policy sperrt jede externe Verbindung. Kein Konto, keine Cloud, kein Tracking, keine Netzwerkzugriffe. Nichts im Browser-Speicher.
+Alle Daten liegen verschlüsselt (AES-256-GCM, Schlüssel im Android Keystore, siehe `LotCryptoPlugin.java`) im privaten App-Speicher (`lot/cfg.json`, `lot/adj.json`, `lot/m_JJJJ-MM.json`). Jede Datei wird doppelt geschrieben (`.json` und `.bak`, mit Gegenlesen); bei einer beschädigten Datei greift die Kopie. Die App hat keine Internet-Berechtigung, das Cloud-Backup von Android ist abgeschaltet und eine Content-Security-Policy sperrt jede externe Verbindung. Kein Konto, keine Cloud, kein Tracking, keine Netzwerkzugriffe. Nichts im Browser-Speicher.
 
 ## Bauen
 
