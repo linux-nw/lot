@@ -20,7 +20,7 @@ Stempeluhr für Android. Ein Button, kein Kommen/Gehen-Gewähle: Die Reihenfolge
 
 ## Daten
 
-Alle Daten liegen als JSON-Dateien im privaten App-Speicher (`lot/cfg.json`, `lot/adj.json`, `lot/m_JJJJ-MM.json`). Jede Datei wird doppelt geschrieben (`.json` und `.bak`, mit Gegenlesen); bei einer beschädigten Datei greift die Kopie. Kein Konto, keine Cloud, kein Tracking, keine Netzwerkzugriffe. Nichts im Browser-Speicher.
+Alle Daten liegen als JSON-Dateien im privaten App-Speicher (`lot/cfg.json`, `lot/adj.json`, `lot/m_JJJJ-MM.json`). Jede Datei wird doppelt geschrieben (`.json` und `.bak`, mit Gegenlesen); bei einer beschädigten Datei greift die Kopie. Die App hat keine Internet-Berechtigung, das Cloud-Backup von Android ist abgeschaltet und eine Content-Security-Policy sperrt jede externe Verbindung. Kein Konto, keine Cloud, kein Tracking, keine Netzwerkzugriffe. Nichts im Browser-Speicher.
 
 ## Bauen
 

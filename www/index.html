@@ -2,6 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; form-action 'none'; base-uri 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Lot</title>
 <style>
@@ -563,7 +564,7 @@ NACHTRAGEN
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid #CBBF9F">
 <div style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 0; min-width: 0">
 <span style="font-size: 17px; font-weight: 600">Gesetzliche Pause abziehen</span>
-<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Fehlt gestempelte Pause, werden ab 6 Std. 30 Min. und ab 9 Std. 45 Min. angerechnet.</span>
+<span style="font-size: 13px; color: #4D473B; line-height: 1.4">Über 6 Std. Arbeit werden 30 Min., über 9 Std. 45 Min. Pause abgezogen, soweit du sie nicht selbst gestempelt hast.</span>
 </div>
 <button role="switch" aria-label="Gesetzliche Pause automatisch abziehen" aria-checked="{{set.autoBreak}}" onClick="{{toggleAuto}}" style="flex: none; width: 60px; height: 44px; padding: 0; background: none; border: 0; display: flex; align-items: center">
 <span style="display: flex; align-items: center; width: 56px; height: 30px; box-sizing: border-box; border: 1.5px solid #1F1C17; background: {{set.autoBg}}">
@@ -653,6 +654,9 @@ OPTIONEN
 <label style="display: flex; flex-direction: column; gap: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.12em; color: #4D473B">UHRZEIT
 <input type="time" value="{{sheetTime}}" onChange="{{onSheetTime}}" style="width: 100%; box-sizing: border-box; min-height: 68px; border: 1.5px solid #1F1C17; border-radius: 0; padding: 0 14px; font-family: 'IBM Plex Mono', monospace; font-size: 38px; font-weight: 600; letter-spacing: -0.02em; background: #FBF8F0; color: #1F1C17">
 </label>
+<sc-if value="{{hasSheetErr}}" hint-placeholder-val="{{ false }}">
+<span role="alert" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; color: #B03A2E">{{sheetErr}}</span>
+</sc-if>
 <sc-if value="{{sheetIn}}" hint-placeholder-val="{{ true }}">
 <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1.5px solid #2E6A3E; color: #2E6A3E; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.08em">
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M15 4h4a2 2 0 012 2v12a2 2 0 01-2 2h-4"/></svg>
@@ -930,18 +934,24 @@ class Component extends DCLogic {
   }
 
   defaultSettings() {
-    return { country: null, region: null, weekHours: 35, workdays: [true,true,true,true,true,false,false], schoolRules: [0,0,0,0,0,0,0], vacDays: 30, autoBreak: false, kontoStart: this.iso(new Date()), startBalance: 0, useHol: true, useFerien: false, schoolEvery: 1, schoolAnchor: this.mondayOf(this.iso(new Date())) };
+    return { country: null, region: null, weekHours: 35, workdays: [true,true,true,true,true,false,false], schoolRules: [0,0,0,0,0,0,0], vacDays: 30, autoBreak: false, kontoStart: this.iso(new Date()), startBalance: 0, useHol: true, useFerien: false };
   }
 
   componentDidMount() {
-    this._timer = setInterval(() => { this._quiet = true; this.setState({ now: Date.now() }); this._quiet = false; }, 30000);
+    this._timer = setInterval(() => this.tick(), 30000);
     this._vis = () => {
       if (document.hidden) { if (this._t) clearTimeout(this._t); this.flush(); return; } // App verlässt den Vordergrund: sofort sichern
-      this._quiet = true; this.setState({ now: Date.now() }); this._quiet = false;
+      this.tick();
     };
     document.addEventListener('visibilitychange', this._vis);
     window.addEventListener('pagehide', this._vis);
     this.initDb();
+  }
+  tick() {
+    const prev = this.iso(new Date(this.state.now)), today = this.iso(new Date());
+    const patch = { now: Date.now() };
+    if (today !== prev && this.state.date === prev && !this.state.sheet) patch.date = today; // über Mitternacht: mit auf heute
+    this.quiet(patch);
   }
   componentWillUnmount() {
     if (this._timer) clearInterval(this._timer);
@@ -1012,25 +1022,35 @@ class Component extends DCLogic {
         else if (d.id === 'adj') adj = data;
         else if (d.id.indexOf('m_') === 0) {
           const ss = data.stamps || {}, tt = data.types || {};
-          Object.keys(ss).forEach((k) => { if (Array.isArray(ss[k])) stamps[k] = ss[k].filter((x) => typeof x === 'string' && /^\d\d:\d\d$/.test(x)); });
-          Object.keys(tt).forEach((k) => { if (typeof tt[k] === 'string') types[k] = tt[k]; });
+          Object.keys(ss).forEach((k) => { if (!/^\d{4}-\d\d-\d\d$/.test(k) || !Array.isArray(ss[k])) return; const arr = Array.from(new Set(ss[k].filter((x) => typeof x === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(x)))).sort(); if (arr.length) stamps[k] = arr; });
+          Object.keys(tt).forEach((k) => { if (/^\d{4}-\d\d-\d\d$/.test(k) && ['arbeit', 'urlaub', 'schule', 'krank', 'feiertag', 'ausgleich'].indexOf(tt[k]) !== -1) types[k] = tt[k]; });
         }
       });
       const base = this.defaultSettings();
       const cs = (cfg && cfg.settings) || {};
-      const settings = Object.assign(base, cs, {
-        useHol: cs.useHol !== false, useFerien: cs.useFerien === true,
+      const num = (v, lo, hi, d) => (typeof v === 'number' && isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d);
+      const isDate = (v) => typeof v === 'string' && /^\d{4}-\d\d-\d\d$/.test(v) && !isNaN(this.parse(v).getTime());
+      const okCountry = cs.country === 'DE' || cs.country === 'AT' ? cs.country : null;
+      const okRegion = okCountry === 'AT' ? 'AT' : (okCountry === 'DE' && this.REGL[cs.region] && cs.region !== 'AT' ? cs.region : null);
+      const wdOk = Array.isArray(cs.workdays) && cs.workdays.length === 7 && cs.workdays.some(Boolean);
+      const settings = {
+        country: okRegion ? okCountry : null, region: okRegion,
+        weekHours: Math.round(num(cs.weekHours, 1, 60, base.weekHours) * 2) / 2,
+        workdays: wdOk ? cs.workdays.map(Boolean) : base.workdays,
         schoolRules: this.migrateRules(cs, base),
-        workdays: Array.isArray(cs.workdays) && cs.workdays.length === 7 ? cs.workdays.slice() : base.workdays,
-        schoolDays: undefined
-      });
-      const list = adj && Array.isArray(adj.list) ? adj.list.map((x) => ({ id: x.id, date: x.date, min: x.min, note: x.note || '' })) : [];
+        vacDays: Math.round(num(cs.vacDays, 0, 60, base.vacDays)),
+        autoBreak: cs.autoBreak === true,
+        kontoStart: isDate(cs.kontoStart) ? cs.kontoStart : base.kontoStart,
+        startBalance: Math.round(num(cs.startBalance, -600000, 600000, 0)),
+        useHol: cs.useHol !== false, useFerien: cs.useFerien === true
+      };
+      const list = adj && Array.isArray(adj.list) ? adj.list.filter((x) => x && typeof x.min === 'number' && isFinite(x.min) && typeof x.date === 'string' && /^\d{4}-\d\d-\d\d$/.test(x.date)).map((x, i) => ({ id: typeof x.id === 'number' ? x.id : i + 1, date: x.date, min: Math.round(x.min), note: typeof x.note === 'string' ? x.note.slice(0, 200) : '' })) : [];
       this.col = col;
       this.dirty = new Set();
       this.quiet({
         loaded: true, sync: 'ok', saveErr: '', repaired: snap.repaired || 0,
         stamps: stamps, types: types, adjust: list,
-        nextId: adj && adj.nextId ? adj.nextId : (list.reduce((m, x) => Math.max(m, x.id || 0), 0) + 1),
+        nextId: Math.max(adj && typeof adj.nextId === 'number' ? adj.nextId : 1, list.reduce((m, x) => Math.max(m, x.id || 0), 0) + 1),
         balInput: cfg && typeof cfg.balInput === 'string' ? cfg.balInput : '',
         settings: settings,
         setup: !settings.country, setupFirst: !settings.country,
@@ -1089,8 +1109,7 @@ class Component extends DCLogic {
           const ss = {}, tt = {};
           Object.keys(S.stamps).forEach((d) => { if (d.slice(0, 7) === pre && S.stamps[d].length) ss[d] = S.stamps[d]; });
           Object.keys(S.types).forEach((d) => { if (d.slice(0, 7) === pre) tt[d] = S.types[d]; });
-          if (Object.keys(ss).length || Object.keys(tt).length) await ref.set({ v: 1, stamps: ss, types: tt });
-          else await ref.delete();
+          await ref.set({ v: 1, stamps: ss, types: tt }); // auch leer schreiben: Löschen könnte nach einem Absturz alte Daten zurückbringen
         }
       } catch (e) { failed = e; this.dirty.add(k); }
     }
@@ -1103,6 +1122,7 @@ class Component extends DCLogic {
 
   async doReset() {
     if (this._t) clearTimeout(this._t);
+    for (let g = 0; this._busy && g < 100; g++) await new Promise((r) => setTimeout(r, 50));
     this.dirty = new Set();
     try {
       if (this.col) {
@@ -1172,7 +1192,7 @@ class Component extends DCLogic {
       if (inR(['BE', 'MV'])) add(p(3, 8), 'Frauentag');
       if (region === 'BB') { add(E, 'Ostersonntag'); add(off(49), 'Pfingstsonntag'); }
       if (inR(['BW', 'BY', 'HE', 'NW', 'RP', 'SL'])) add(off(60), 'Fronleichnam');
-      if (region === 'SL') add(p(8, 15), 'Mariä Himmelfahrt');
+      if (inR(['SL', 'BY'])) add(p(8, 15), 'Mariä Himmelfahrt');
       if (region === 'TH') add(p(9, 20), 'Weltkindertag');
       if (inR(['BB', 'HB', 'HH', 'MV', 'NI', 'SN', 'ST', 'SH', 'TH'])) add(p(10, 31), 'Reformationstag');
       if (inR(['BW', 'BY', 'NW', 'RP', 'SL'])) add(p(11, 1), 'Allerheiligen');
@@ -1226,6 +1246,25 @@ class Component extends DCLogic {
     return 'arbeit';
   }
 
+  // Gesetzliche Pause: über 6 Std. Arbeit 30 Min., über 9 Std. 45 Min. Gestempelte Pause wird angerechnet.
+  // Die Arbeitszeit fällt durch den Abzug nie unter 6:00 bzw. 9:00 zurück (kein Sprung nach unten).
+  netWork(w, pause) {
+    if (w <= 360) return w;
+    let n = Math.max(360, w - Math.max(0, 30 - pause));
+    if (n > 540) n = Math.max(540, w - Math.max(0, 45 - pause));
+    return n;
+  }
+  // Stundenangabe: "12,5", "-3", "12:30", "−1:15" -> Stunden als Zahl (NaN wenn ungültig)
+  parseHours(v) {
+    let t = String(v == null ? '' : v).trim().replace(/\u2212/g, '-').replace(/\s/g, '');
+    if (!t) return NaN;
+    const m = /^([+-]?)(\d{1,4}):([0-5]?\d)$/.exec(t);
+    if (m) { const x = parseInt(m[2], 10) * 60 + parseInt(m[3], 10); return (m[1] === '-' ? -x : x) / 60; }
+    t = t.replace(',', '.');
+    if (!/^[+-]?(\d+\.?\d*|\.\d+)$/.test(t)) return NaN;
+    return parseFloat(t);
+  }
+
   dayInfo(s, S) {
     const st = S.settings;
     const d = this.parse(s);
@@ -1251,25 +1290,37 @@ class Component extends DCLogic {
     for (let i = 1; i + 1 < times.length; i += 2) pause += this.toMin(times[i + 1]) - this.toMin(times[i]);
     let autoCut = 0;
     if (st.autoBreak && worked > 0) {
-      const req = worked > 540 ? 45 : (worked > 360 ? 30 : 0);
-      autoCut = Math.max(0, req - pause);
-      worked -= autoCut;
+      const net = this.netWork(worked, pause);
+      autoCut = worked - net;
+      worked = net;
     }
     return { s: s, d: d, wd: wd, hol: hol, ferien: this.ferien(s), type: type, explicit: explicit, soll: soll, baseSoll: baseSoll, times: times, worked: worked, pause: pause, autoCut: autoCut, open: open, incomplete: incomplete, saldo: worked - soll };
   }
 
-  kontoThrough(sel, S, todayIso) {
-    const end = sel < todayIso ? sel : todayIso;
-    let days = 0, cur = S.settings.kontoStart, guard = 0;
-    while (cur <= end && guard < 900) {
+  // Laufende Summe (Ist − Soll) je Tag ab Kontostart; wird nur neu gerechnet, wenn sich Daten ändern
+  kontoCum(S, todayIso) {
+    const c = this._kc;
+    const nowKey = (S.stamps[todayIso] || []).length % 2 === 1 ? Math.floor(S.now / 60000) : 0;
+    if (c && c.stamps === S.stamps && c.types === S.types && c.settings === S.settings && c.today === todayIso && c.nowKey === nowKey) return c.map;
+    const map = {};
+    let sum = 0, cur = S.settings.kontoStart, guard = 0;
+    while (cur <= todayIso && guard < 40000) {
       const di = this.dayInfo(cur, S);
-      if (!(cur === todayIso && di.times.length === 0)) days += di.worked - di.soll;
+      if (!(cur === todayIso && di.times.length === 0)) sum += di.worked - di.soll;
+      map[cur] = sum;
       cur = this.addDays(cur, 1);
       guard++;
     }
+    this._kc = { stamps: S.stamps, types: S.types, settings: S.settings, today: todayIso, nowKey: nowKey, map: map };
+    return map;
+  }
+  kontoThrough(sel, S, todayIso) {
+    const end = sel < todayIso ? sel : todayIso;
+    const ks = S.settings.kontoStart;
+    const days = end >= ks ? (this.kontoCum(S, todayIso)[end] || 0) : 0;
     let adj = 0;
-    S.adjust.forEach((a) => { if (a.date <= end) adj += a.min; });
-    const start = end >= S.settings.kontoStart ? S.settings.startBalance : 0;
+    S.adjust.forEach((a) => { if (a.date <= end && a.date >= ks) adj += a.min; });
+    const start = end >= ks ? S.settings.startBalance : 0;
     return { days: days, adj: adj, start: start, total: days + adj + start };
   }
 
@@ -1362,13 +1413,7 @@ class Component extends DCLogic {
     let toGo = sel.saldo < 0 ? -sel.saldo : 0;
     if (sel.open && sel.saldo < 0 && st.autoBreak) {
       const gross = sel.worked + sel.autoCut;
-      toGo = 0;
-      for (let m = 0; m <= 720; m++) {
-        const g = gross + m;
-        const req = g > 540 ? 45 : (g > 360 ? 30 : 0);
-        if (g - Math.max(0, req - sel.pause) >= sel.soll) { toGo = m; break; }
-        toGo = m;
-      }
+      for (let m = 0; m <= 900; m++) { toGo = m; if (this.netWork(gross + m, sel.pause) >= sel.soll) break; }
     }
     let remain = 'KEIN SOLL';
     if (sel.type === 'schule') remain = 'SCHULTAG · SOLL ANGERECHNET';
@@ -1412,7 +1457,7 @@ class Component extends DCLogic {
         hasPause: !!pauseText, pauseText: pauseText,
         sub: sub, hasSub: !!sub,
         aria: (isIn ? 'Kommen ' : 'Gehen ') + t + ' bearbeiten',
-        tap: () => this.setState({ sheet: { mode: 'edit', idx: i }, sheetTime: t })
+        tap: () => this.setState({ sheet: { mode: 'edit', idx: i }, sheetTime: t, sheetErr: '' })
       };
     });
     const hasEntries = times.length > 0;
@@ -1538,7 +1583,7 @@ class Component extends DCLogic {
           code: lk.code, codeColor: lk.codeColor, hasCode: !!lk.code, tf: this.stickerTf(s2), ink: (0.78 + (h % 22) / 100).toFixed(2),
           lines: lines, note: note, hasNote: !!note, tl: tlOf(di),
           hours: di.worked > 0 ? this.fmt(di.worked) : (di.soll > 0 && lk.hours === 'FEHLT' ? 'FEHLT' : '–'),
-          saldo: (di.worked > 0 || di.soll > 0) && s2 >= st.kontoStart && s2 <= todayIso ? this.sfmt(di.saldo) : '',
+          saldo: (di.worked > 0 || di.soll > 0) && s2 >= st.kontoStart && s2 <= todayIso && !(s2 === todayIso && di.times.length === 0) ? this.sfmt(di.saldo) : '',
           saldoColor: selColor(di.saldo, s2 === S.date && !S.stampTool),
           aria: this.DOWL[di.wd] + ', ' + di.d.getDate() + '. ' + this.MONL[di.d.getMonth()] + (di.times.length ? ', ' + di.times.join(' ') : ''),
           tap: tapDay(s2)
@@ -1605,7 +1650,8 @@ class Component extends DCLogic {
 
     // ---- Urlaubskonto ----
     const year = parseInt(todayIso.slice(0, 4), 10);
-    const vKeys = Object.keys(S.types).filter((x) => S.types[x] === 'urlaub' && x.slice(0, 4) === String(year)).sort();
+    const isWorkDay = (x) => st.workdays[this.wdIdx(this.parse(x))] && !this.hol(x);
+    const vKeys = Object.keys(S.types).filter((x) => S.types[x] === 'urlaub' && x.slice(0, 4) === String(year) && isWorkDay(x)).sort();
     const taken = vKeys.filter((x) => x <= todayIso).length;
     const planned = vKeys.length - taken;
     const rest = st.vacDays - taken - planned;
@@ -1632,7 +1678,7 @@ class Component extends DCLogic {
       color: TC[g.kind][1],
       tf: this.stickerTf(g.from + g.kind),
       label: g.from === g.to ? this.fmtShort(g.from) : this.fmtShort(g.from) + ' – ' + this.fmtShort(g.to),
-      sub: this.TL[g.kind].toUpperCase() + ' · ' + g.days.length + (g.days.length === 1 ? ' TAG' : ' TAGE') + (g.to < todayIso ? ' · VORBEI' : ''),
+      sub: this.TL[g.kind].toUpperCase() + ' · ' + g.days.filter(isWorkDay).length + (g.days.filter(isWorkDay).length === 1 ? ' TAG' : ' TAGE') + (g.to < todayIso ? ' · VORBEI' : ''),
       aria: this.TL[g.kind] + ' ' + this.fmtShort(g.from) + ' entfernen',
       del: () => {
         const types = Object.assign({}, this.state.types);
@@ -1664,7 +1710,7 @@ class Component extends DCLogic {
     };
     const adjRows = S.adjust.slice().sort((a, b) => (a.date < b.date ? 1 : (a.date > b.date ? -1 : b.id - a.id))).map((a) => ({
       note: a.note || 'Buchung',
-      date: this.fmtDate(a.date),
+      date: this.fmtDate(a.date) + (a.date < st.kontoStart ? ' · VOR KONTOSTART, ZÄHLT NICHT' : ''),
       amount: this.sfmt(a.min),
       color: colorOf(a.min),
       aria: 'Buchung ' + (a.note || '') + ' löschen',
@@ -1765,7 +1811,7 @@ class Component extends DCLogic {
         if (!okNow) return;
         const patch = { country: c.setupCountry, region: c.setupCountry === 'AT' ? 'AT' : c.setupRegion, useHol: c.setupHol, useFerien: c.setupCountry === 'DE' && c.setupFerien };
         if (c.setupFirst) {
-          const n = parseFloat(String(c.setupBal).replace(',', '.'));
+          const n = this.parseHours(c.setupBal);
           patch.kontoStart = this.iso(new Date());
           patch.startBalance = isFinite(n) ? Math.round(n * 60) : 0;
         }
@@ -1813,11 +1859,13 @@ class Component extends DCLogic {
       hasAutoCut: sel.autoCut > 0,
       autoCutText: this.fmt(sel.autoCut) + ' Std.',
       pauseTotal: this.fmt(sel.pause),
-      openAdd: () => this.setState({ sheet: { mode: 'new', idx: -1 }, sheetTime: S.date === todayIso ? this.hhmm(nowMin) : '08:00' }),
+      openAdd: () => this.setState({ sheetErr: '', sheet: { mode: 'new', idx: -1 }, sheetTime: S.date === todayIso ? this.hhmm(nowMin) : '08:00' }),
       stampNow: () => {
         const n = new Date();
         const t = this.iso(n);
-        this.addStamp(t, this.pad(n.getHours()) + ':' + this.pad(n.getMinutes()));
+        const hm = this.pad(n.getHours()) + ':' + this.pad(n.getMinutes());
+        if ((this.state.stamps[t] || []).indexOf(hm) !== -1) { this.quiet({ date: t, now: Date.now() }); return; } // Doppeltipp in derselben Minute
+        this.addStamp(t, hm);
         this.setState({ date: t, now: Date.now() });
       },
       nextLabel: nextIn ? 'KOMMEN' : 'GEHEN',
@@ -1828,7 +1876,8 @@ class Component extends DCLogic {
       sheetIsEdit: sheetIsEdit,
       sheetTitle: sheetIsEdit ? 'EINTRAG ÄNDERN' : 'NACHTRAGEN',
       sheetTime: S.sheetTime,
-      onSheetTime: (e) => this.setState({ sheetTime: e.target.value }),
+      onSheetTime: (e) => this.setState({ sheetTime: e.target.value, sheetErr: '' }),
+      sheetErr: S.sheetErr || '', hasSheetErr: !!S.sheetErr,
       sheetIn: sheetIn,
       sheetOut: !sheetIn,
       closeSheet: () => this.setState({ sheet: null }),
@@ -1838,6 +1887,7 @@ class Component extends DCLogic {
         const stamps = Object.assign({}, cur.stamps);
         const arr = (stamps[cur.date] || []).slice().sort();
         if (cur.sheet.mode === 'edit') arr.splice(cur.sheet.idx, 1);
+        if (arr.indexOf(cur.sheetTime) !== -1) { this.quiet({ sheetErr: 'UM ' + cur.sheetTime + ' GIBT ES SCHON EINE STEMPELUNG.' }); return; }
         arr.push(cur.sheetTime);
         arr.sort();
         stamps[cur.date] = arr;
@@ -1891,7 +1941,7 @@ class Component extends DCLogic {
       onAdjNote: (e) => this.setState({ adjNote: e.target.value }),
       addAdj: () => {
         const cur = this.state;
-        const v = parseFloat(String(cur.adjAmt).replace(',', '.'));
+        const v = this.parseHours(cur.adjAmt);
         if (!isFinite(v) || v === 0) return;
         const min = Math.round(Math.abs(v) * 60) * cur.adjSign;
         const list = cur.adjust.concat([{ id: cur.nextId, date: this.iso(new Date()), min: min, note: cur.adjNote.trim() }]);
@@ -1916,7 +1966,7 @@ class Component extends DCLogic {
       toggleAuto: () => this.updSettings({ autoBreak: !this.state.settings.autoBreak }),
       toggleHol: () => this.updSettings({ useHol: this.state.settings.useHol === false }),
       toggleFerien: () => this.updSettings({ useFerien: !this.state.settings.useFerien }),
-      onBalance: (e) => { const v = e.target.value; const n = parseFloat(String(v).replace(',', '.')); this.setState({ balInput: v }); this.updSettings({ startBalance: isFinite(n) ? Math.round(n * 60) : 0 }); },
+      onBalance: (e) => { const v = e.target.value; const n = this.parseHours(v); this.setState({ balInput: v }); this.updSettings({ startBalance: isFinite(n) ? Math.round(n * 60) : 0 }); },
       onKontoStart: (e) => { if (/^\d{4}-\d\d-\d\d$/.test(e.target.value)) this.updSettings({ kontoStart: e.target.value }); }
     };
   }

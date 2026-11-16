@@ -34,4 +34,12 @@ if 'windowSplashScreenBackground' not in s:
 import os
 if os.path.exists(RES + '/drawable-v24/ic_launcher_foreground.xml'): os.remove(RES + '/drawable-v24/ic_launcher_foreground.xml')
 subprocess.check_call(['python3', 'tools/make_icons.py', RES])
+# Komplett offline: keine Internet-Berechtigung, kein Cloud-Backup
+m = RES + '/../AndroidManifest.xml'; s = open(m).read()
+if 'tools:node="remove"' not in s:
+    s = s.replace('<manifest xmlns:android="http://schemas.android.com/apk/res/android">', '<manifest xmlns:android="http://schemas.android.com/apk/res/android"\n    xmlns:tools="http://schemas.android.com/tools">')
+    s = s.replace('android:allowBackup="true"', 'android:allowBackup="false"\n        android:fullBackupContent="false"\n        android:dataExtractionRules="@xml/data_extraction_rules"\n        android:usesCleartextTraffic="false"\n        tools:replace="android:allowBackup"')
+    s = s.replace('<uses-permission android:name="android.permission.INTERNET" />', '<uses-permission android:name="android.permission.INTERNET" tools:node="remove" />\n    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove" />')
+    open(m, 'w').write(s)
+    open(RES + '/xml/data_extraction_rules.xml', 'w').write('<?xml version="1.0" encoding="utf-8"?>\n<data-extraction-rules>\n    <cloud-backup>\n        <exclude domain="root" /><exclude domain="file" /><exclude domain="database" /><exclude domain="sharedpref" /><exclude domain="external" />\n    </cloud-backup>\n</data-extraction-rules>\n')
 print('Android-Projekt angepasst')
