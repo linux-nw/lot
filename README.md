@@ -1,28 +1,30 @@
 # Lot
 
-<img src="assets/icon.png" width="96" alt="Lot Icon">
+**Status:** 🟢 Aktiv · Version 1.6
 
-Stempeluhr für Android. Ein Button, kein Kommen/Gehen-Gewähle: Die Reihenfolge der Stempel entscheidet, Pausen ergeben sich von selbst. Alles bleibt auf dem Gerät.
+Stempeluhr für Android. Ein Button, kein Kommen/Gehen-Gewähle: Die Reihenfolge der Stempel entscheidet, Pausen ergeben sich von selbst.
 
-## Funktionen
+**Name:** Das Lot war eine alte Masseneinheit, ungefähr ein Löffel voll, bis ins 19. Jahrhundert im Gebrauch. Das Logo ist ein Kerbstab, auf dem früher mitgeschrieben wurde. Lot misst dafür deine Arbeitszeit statt Gewicht.
 
-- Heute-Ansicht mit Tagessaldo, Gearbeitet, Soll und Stundenkonto
-- Ein Stempel-Button, Kommen/Gehen und Pausen werden abgeleitet
-- Nachtragen und Ändern: alles wird neu berechnet
-- Gesetzliche Pause (ab 6 Std. 30 Min., ab 9 Std. 45 Min.) optional automatisch abziehen
-- Kalender mit Stempelkasten: Urlaub, Berufsschule, Krank, Ausgleich, Arbeit
-- Quadratische Monatsansicht mit Zeitbalken pro Tag, darunter alle Stempelzeiten des gewählten Tages mit Blöcken und Pausen
-- Berufsschultage pro Wochentag: jede Woche, gerade oder ungerade Kalenderwochen und frei wählbare Arbeitstage
-- Feiertage für alle 16 deutschen Bundesländer und Österreich, offline berechnet, optional
-- Schulferien (amtliche Daten der OpenHolidays API, 2025 bis 2029, fest eingebaut), optional; Berufsschule entfällt in den Ferien. Neu holen: `python3 tools/fetch-ferien.py 2025 2029`
-- Urlaubskonto und manuelle Stundenkonto-Buchungen
-- Startdatum und Startsaldo für den Umstieg aus einem alten System
+---
 
-## Daten
+## Download
 
-Alle Daten liegen verschlüsselt (AES-256-GCM, Schlüssel im Android Keystore, siehe `LotCryptoPlugin.java`) im privaten App-Speicher (`lot/cfg.json`, `lot/adj.json`, `lot/m_JJJJ-MM.json`). Jede Datei wird doppelt geschrieben (`.json` und `.bak`, mit Gegenlesen); bei einer beschädigten Datei greift die Kopie. Die App hat keine Internet-Berechtigung, das Cloud-Backup von Android ist abgeschaltet und eine Content-Security-Policy sperrt jede externe Verbindung. Kein Konto, keine Cloud, kein Tracking, keine Netzwerkzugriffe. Nichts im Browser-Speicher.
+➡️ [Neueste Version (APK)](https://github.com/linux-nw/lot/releases/latest)
 
-## Bauen
+Die APK kommt nicht aus dem Play Store, deshalb fragt Android bei der Installation einmalig nach der Erlaubnis für "Unbekannte Quellen". Das ist normal. Die SHA-256-Prüfsumme steht in den Release-Notes.
+
+---
+
+## Nutzung
+
+1. App öffnen, Soll-Arbeitszeit und optional Bundesland einstellen.
+2. Den Stempel-Button drücken. Kommen, Gehen und Pausen leitet Lot aus der Reihenfolge ab.
+3. Vergessen? Nachtragen oder ändern, alles wird neu berechnet.
+
+---
+
+## Selbst bauen
 
 Voraussetzungen: Node 22, JDK 21, Android SDK (Plattform 36).
 
@@ -32,17 +34,27 @@ npx cap sync android
 cd android && ./gradlew assembleRelease
 ```
 
-Das Android-Projekt liegt im Repo. Nur wenn du `android/` neu erzeugst (`npx cap add android`), danach einmal `python3 tools/patch-android.py` ausführen (Splash, Icons, Signatur-Konfiguration).
+Für ein signiertes APK die Umgebungsvariablen `LOT_KEYSTORE`, `LOT_STOREPASS`, `LOT_KEYALIAS` und `LOT_KEYPASS` setzen. Ohne sie entsteht ein unsigniertes APK.
 
-Für ein signiertes Release-APK die Umgebungsvariablen `LOT_KEYSTORE`, `LOT_STOREPASS`, `LOT_KEYALIAS` und `LOT_KEYPASS` setzen. Der Keystore gehört nicht ins Repo. Ohne diese Variablen entsteht ein unsigniertes APK.
+---
 
-## Aufbau
+## Repo-Struktur
 
-- `www/index.html`: die gesamte App (Vorlage, Logik, Stile)
-- `www/fonts/`: IBM Plex, lokal eingebunden
-- `tools/make_icons.py`: erzeugt alle Icons aus dem Kerbstab
-- `tools/patch-android.py`: Anpassungen am erzeugten Android-Projekt
+```
+www/        die gesamte App (index.html) und lokale Schriften
+android/    Capacitor-Android-Projekt
+tools/      Hilfsskripte (Icons, Android-Patch, Schulferien-Daten)
+assets/     App-Icon
+```
+
+---
+
+## Datenschutz
+
+Alles bleibt auf dem Gerät, verschlüsselt (AES-256-GCM, Schlüssel im Android Keystore). Kein Konto, keine Cloud, kein Tracking, keine Internet-Berechtigung.
+
+---
 
 ## Lizenz
 
-MIT
+[MIT](LICENSE)
